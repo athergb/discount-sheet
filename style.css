@@ -1,0 +1,113 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #eef3f8;
+  margin: 0;
+  padding: 15px;
+}
+
+header {
+  text-align: center;
+}
+
+.main-logo {
+  width: 120px;
+}
+
+h2, h3 {
+  color: #0aa6c0;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  background: #fff;
+  padding: 12px;
+  margin-bottom: 20px;
+}
+
+.controls input, .controls select {
+  padding: 6px;
+}
+
+.controls button {
+  background: #0aa6c0;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card img {
+  width: 130px;       /* increased size */
+  height: 60px;       /* increased size */
+  object-fit: contain;
+  display: block;
+  margin-bottom: 6px;
+}
+
+
+.card .discount {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #0aa6c0;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 0 10px 0 10px;
+  font-weight: bold;
+}
+
+.card p {
+  margin: 5px 0;
+  font-size: 13px;
+}
+
+.card .actions {
+  text-align: right;
+  font-size: 12px;
+}
+
+.card .actions span {
+  cursor: pointer;
+  margin-left: 8px;
+  color: #0aa6c0;
+}
+
+.bottom-actions {
+  text-align: center;
+}
+
+@media print {
+  .controls, .actions, .bottom-actions {
+    display: none;
+  }
+}
+
+.notice {
+  display: inline-block;
+  background: #ffcc00;
+  color: #000;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 5px;
+  font-weight: bold;
+}
