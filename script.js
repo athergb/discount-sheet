@@ -144,21 +144,23 @@ function saveAsImage() {
 // ========================
 // LOCK / UNLOCK EDIT PANEL
 // ========================
-const lockBtn = document.getElementById("lockBtn");
-const controlsSection = document.querySelector(".controls");
+window.addEventListener("DOMContentLoaded", () => {
+  const lockBtn = document.getElementById("lockBtn");
+  const controlsSection = document.querySelector(".controls");
 
-let isLocked = false;
+  let isLocked = false;
 
-lockBtn.addEventListener("click", () => {
-  isLocked = !isLocked;
+  lockBtn.addEventListener("click", () => {
+    isLocked = !isLocked;
 
-  // Toggle all inputs, selects, and save button inside controls
-  controlsSection.querySelectorAll("input, select, button").forEach(el => {
-    if (el.id !== "lockBtn") el.disabled = isLocked;
+    // Disable/enable all inputs, selects, and buttons except lockBtn
+    controlsSection.querySelectorAll("input, select, button").forEach(el => {
+      if (el.id !== "lockBtn") el.disabled = isLocked;
+    });
+
+    // Update button text
+    lockBtn.textContent = isLocked
+      ? "🔓 Unlock Edit Panel"
+      : "🔒 Lock Edit Panel";
   });
-
-  // Update lock button text
-  lockBtn.textContent = isLocked ? "🔓 Unlock Edit Panel" : "🔒 Lock Edit Panel";
 });
-
-
