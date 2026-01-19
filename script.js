@@ -14,27 +14,21 @@ function saveAirline() {
   const categoryInput = document.getElementById("category");
   const logoInput = document.getElementById("logo");
   const editIndexInput = document.getElementById("editIndex");
+  const validityInput = document.getElementById("validity"); // Manual date
 
   const airline = airlineInput.value.trim();
   const note = noteInput.value.trim();
   const notification = notificationInput.value.trim();
   const discount = discountInput.value.trim();
   const category = categoryInput.value;
+  const validity = validityInput.value; // Manual
   const editIndex = editIndexInput.value;
 
-  if (!airline || !discount) {
-    alert("Airline & Discount required!");
+  if (!airline || !discount || !validity) {
+    alert("Airline, Discount, and Validity are required!");
     return;
   }
 
-  // Auto-validity: 7 days from today
-  const today = new Date();
-  const validityDate = new Date(today);
-  validityDate.setDate(today.getDate() + 7);
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  const validity = validityDate.toLocaleDateString("en-US", options);
-
-  // Function to save record (after reading logo)
   const saveRecord = (logoData) => {
     const record = {
       airline,
@@ -57,7 +51,6 @@ function saveAirline() {
     render();
   };
 
-  // Handle file upload
   if (logoInput.files.length > 0) {
     const reader = new FileReader();
     reader.onload = function () {
@@ -65,7 +58,7 @@ function saveAirline() {
     };
     reader.readAsDataURL(logoInput.files[0]);
   } else {
-    saveRecord(""); // No logo
+    saveRecord("");
   }
 }
 
@@ -78,6 +71,7 @@ function clearForm() {
   document.getElementById("notification").value = "";
   document.getElementById("discount").value = "";
   document.getElementById("logo").value = "";
+  document.getElementById("validity").value = "";
   document.getElementById("category").value = "cash";
   document.getElementById("editIndex").value = "";
 }
@@ -102,15 +96,6 @@ function render() {
   const today = new Date();
 
   data.forEach((a, i) => {
-    // Default validity if missing
-    if (!a.validity) {
-      const defaultDate = new Date();
-      defaultDate.setDate(today.getDate() + 7);
-      const options = { year: "numeric", month: "long", day: "numeric" };
-      a.validity = defaultDate.toLocaleDateString("en-US", options);
-    }
-
-    // Expired check
     const cardDate = new Date(a.validity);
     const validityClass = cardDate < today ? "expired" : "";
 
@@ -151,6 +136,7 @@ function edit(i) {
   document.getElementById("notification").value = a.notification || "";
   document.getElementById("discount").value = a.discount;
   document.getElementById("category").value = a.category;
+  document.getElementById("validity").value = a.validity;
   document.getElementById("editIndex").value = i;
 }
 
