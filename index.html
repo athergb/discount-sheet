@@ -24,12 +24,11 @@
   <input type="text" id="note" placeholder="International / Domestic / GDS">
   <input type="text" id="notification" placeholder="Notification (e.g. HITT ONLY / FACE VALUE)">
   <input type="text" id="discount" placeholder="-2.5% or PKR 500">
-  <input type="date" id="validity" placeholder="Validity Date">
-  
+
   <input type="file" id="logo" accept="image/*">
 
-  <button onclick="saveAirline()">Save</button>
-  <button id="lockBtn">🔒 Lock Edit Panel</button>
+  <button type="button" onclick="saveAirline()">Save</button>
+  <button type="button" id="lockBtn">🔒 Lock Edit Panel</button>
 </section>
 
 <div id="sheet">
@@ -37,41 +36,35 @@
     <img src="QFClogo.png" class="main-logo">
   </header>
 
-    <div class="gds-logos">
-  <div class="logo-box">
-    <img src="1A.png" alt="Amadeus">
+  <div class="gds-logos">
+    <div class="logo-box">
+      <img src="1A.png" alt="Amadeus">
+    </div>
+    <div class="logo-box">
+      <img src="1G.png" alt="Galileo">
+    </div>
+    <div class="logo-box">
+      <img src="1S.png" alt="Sabre">
+    </div>
   </div>
-  <div class="logo-box">
-    <img src="1G.png" alt="Galileo">
-  </div>
-  <div class="logo-box">
-    <img src="1S.png" alt="Sabre">
-  </div>
-</div>
 
-<div class="gds-offer-text">
-  Get Additional Discount upto <strong>PKR 1600/-</strong> per ticket
-</div>
-  
-<h3>SAME DAY CASH</h3>
-<div class="grid" id="cashGrid"></div>
+  <div class="gds-offer-text">
+    Get Additional Discount upto <strong>PKR 1600/-</strong> per ticket
+  </div>
 
-<h3>CREDIT AIRLINE</h3>
-<div class="grid" id="creditGrid"></div>
+  <h3>SAME DAY CASH</h3>
+  <div class="grid" id="cashGrid"></div>
+
+  <h3>CREDIT AIRLINE</h3>
+  <div class="grid" id="creditGrid"></div>
 </div>
 
 <div class="bottom-actions">
-  <button onclick="window.print()">🖨 Print / PDF</button>
-  <button onclick="saveAsImage()">📸 Save as JPG</button>
+  <button type="button" onclick="window.print()">🖨 Print / PDF</button>
+  <button type="button" onclick="saveAsImage()">📸 Save as JPG</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
