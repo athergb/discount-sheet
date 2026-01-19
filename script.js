@@ -14,21 +14,29 @@ function saveAirline() {
   const categoryInput = document.getElementById("category");
   const logoInput = document.getElementById("logo");
   const editIndexInput = document.getElementById("editIndex");
-  const validityInput = document.getElementById("validity"); // Manual date
+  const validityInput = document.getElementById("validity");
 
   const airline = airlineInput.value.trim();
   const note = noteInput.value.trim();
   const notification = notificationInput.value.trim();
   const discount = discountInput.value.trim();
   const category = categoryInput.value;
-  const validity = validityInput.value; // Manual
   const editIndex = editIndexInput.value;
+  const validityRaw = validityInput.value; // YYYY-MM-DD from date picker
 
-  if (!airline || !discount || !validity) {
+  if (!airline || !discount || !validityRaw) {
     alert("Airline, Discount, and Validity are required!");
     return;
   }
 
+  // Convert to human-readable format: "January 31, 2026"
+  const validity = new Date(validityRaw).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+  // Function to save record after reading logo (if any)
   const saveRecord = (logoData) => {
     const record = {
       airline,
@@ -43,7 +51,7 @@ function saveAirline() {
     if (editIndex === "") {
       data.push(record);
     } else {
-      data[editIndex] = record;
+      data[editIndex] = record; // update the record correctly
     }
 
     saveToStorage();
@@ -51,6 +59,7 @@ function saveAirline() {
     render();
   };
 
+  // Handle logo file asynchronously
   if (logoInput.files.length > 0) {
     const reader = new FileReader();
     reader.onload = function () {
@@ -58,7 +67,7 @@ function saveAirline() {
     };
     reader.readAsDataURL(logoInput.files[0]);
   } else {
-    saveRecord("");
+    saveRecord(""); // no logo
   }
 }
 
@@ -136,7 +145,14 @@ function edit(i) {
   document.getElementById("notification").value = a.notification || "";
   document.getElementById("discount").value = a.discount;
   document.getElementById("category").value = a.category;
-  document.getElementById("validity").value = a.validity;
+
+  // Convert "January 31, 2026" back to YYYY-MM-DD for date picker
+  const parts = new Date(a.validity);
+  const yyyy = parts.getFullYear();
+  const mm = String(parts.getMonth() + 1).padStart(2, "0");
+  const dd = String(parts.getDate()).padStart(2, "0");
+  document.getElementById("validity").value = `${yyyy}-${mm}-${dd}`;
+
   document.getElementById("editIndex").value = i;
 }
 
