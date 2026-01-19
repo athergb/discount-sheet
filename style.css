@@ -148,4 +148,20 @@ h2, h3 {
   object-fit: contain;   /* MOST IMPORTANT */
 }
 
+.gds-offer-text {
+  display: inline-block;
+  margin: 10px auto 20px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #e7f1ff;
+  color: #0b5ed7;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.gds-offer-text {
+  display: block;
+  width: fit-content;
+}
+
 
