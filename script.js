@@ -1,20 +1,61 @@
 let data = JSON.parse(localStorage.getItem("airlineData")) || [];
 
 function saveAirline() {
-  let airline = document.getElementById("airline").value;
-  let note = document.getElementById("note").value;
-  let notification = document.getElementById("notification").value;
-  let discount = document.getElementById("discount").value;
+  let airline = document.getElementById("airline").value.trim();
+  let note = document.getElementById("note").value.trim();
+  let notification = document.getElementById("notification").value.trim();
+  let discount = document.getElementById("discount").value.trim();
   let category = document.getElementById("category").value;
   let logoInput = document.getElementById("logo");
   let editIndex = document.getElementById("editIndex").value;
-  let validity = document.getElementById("validity").value;
 
   if (!airline || !discount) {
     alert("Airline & Discount required");
     return;
   }
 
+// Auto Validity: 7 days from today
+  let today = new Date();
+  let validityDate = new Date(today.setDate(today.getDate() + 7));
+  let options = { year: "numeric", month: "long", day: "numeric" };
+  let validity = validityDate.toLocaleDateString("en-US", options);
+
+  // Function to actually save the record
+  const saveRecord = (logoData) => {
+    let record = {
+      airline,
+      note,
+      notification,
+      discount,
+      category,
+      logo: logoData || "", // default empty if no file
+      validity
+    };
+
+    if (editIndex === "") {
+      data.push(record);
+    } else {
+      data[editIndex] = record;
+      document.getElementById("editIndex").value = "";
+    }
+
+    saveToStorage();
+    clearForm();
+    render();
+  };
+
+  // Handle file upload
+  if (logoInput.files.length > 0) {
+    let reader = new FileReader();
+    reader.onload = function () {
+      saveRecord(reader.result);
+    };
+    reader.readAsDataURL(logoInput.files[0]);
+  } else {
+    saveRecord(""); // no logo
+  }
+}
+  
   let reader = new FileReader();
 
   reader.onload = function () {
@@ -51,22 +92,34 @@ function render() {
   document.getElementById("cashGrid").innerHTML = "";
   document.getElementById("creditGrid").innerHTML = "";
 
-  data.forEach((a, i) => {
-    let card = `
+  let today = new Date();
+
+data.forEach((a, i) => {
+    // Set default validity if missing
+    if (!a.validity) {
+      let defaultDate = new Date();
+      defaultDate.setDate(defaultDate.getDate() + 7);
+      let options = { year: "numeric", month: "long", day: "numeric" };
+      a.validity = defaultDate.toLocaleDateString("en-US", options);
+    }
+
+    // Check if expired
+    let validityClass = "";
+    let cardDate = new Date(a.validity);
+    if (cardDate < today) validityClass = "expired";
+  
+  let card = `
   <div class="card">
     <div class="discount">${a.discount}</div>
-
     ${a.logo ? `<img src="${a.logo}">` : ""}
-
     <p><b>${a.airline}</b></p>
-
     <p>
       ${a.note}
       ${a.notification && a.notification.trim() !== ""
         ? `<span class="notice">${a.notification}</span>`
         : ""}
     </p>
-
+  ${a.validity ? `<p class="validity ${validityClass}">Valid till: ${a.validity}</p>` : ""}
     <div class="actions">
       <span onclick="edit(${i})">Edit</span>
       <span onclick="del(${i})">Delete</span>
@@ -81,8 +134,10 @@ function render() {
       creditGrid.innerHTML += card;
     }
   });
-}
 
+// Save back any auto-updated validity for old records
+  saveToStorage();
+}
 function edit(i) {
   let a = data[i];
   document.getElementById("airline").value = a.airline;
@@ -175,5 +230,6 @@ window.addEventListener("DOMContentLoaded", () => {
       : "🔒 Lock Edit Panel";
   });
 });
+
 
 
