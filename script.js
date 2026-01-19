@@ -37,13 +37,13 @@ function saveAirline() {
       discount,
       category,
       logo: logoData || "",
-      validity // store in YYYY-MM-DD format
+      validity // store exact YYYY-MM-DD
     };
 
     if (editIndex === "") {
       data.push(record);
     } else {
-      data[editIndex] = record; // update record correctly
+      data[editIndex] = record;
     }
 
     saveToStorage();
@@ -94,12 +94,13 @@ function render() {
   creditGrid.innerHTML = "";
 
   const today = new Date();
+  today.setHours(0,0,0,0); // ignore time
 
   data.forEach((a, i) => {
-    const cardDate = new Date(a.validity);
+    const [year, month, day] = a.validity.split("-");
+    const cardDate = new Date(year, month - 1, day); // local date
     const validityClass = cardDate < today ? "expired" : "";
 
-    // Display in human-readable format
     const validityDisplay = cardDate.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -144,7 +145,7 @@ function edit(i) {
   document.getElementById("discount").value = a.discount;
   document.getElementById("category").value = a.category;
 
-  // Directly assign YYYY-MM-DD to date input
+  // Directly assign stored YYYY-MM-DD
   document.getElementById("validity").value = a.validity;
 
   document.getElementById("editIndex").value = i;
