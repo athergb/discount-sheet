@@ -7,7 +7,6 @@ let data = JSON.parse(localStorage.getItem("airlineData")) || [];
 // SAVE AIRLINE FUNCTION
 // ========================
 function saveAirline() {
-  // Get all form elements
   const airlineInput = document.getElementById("airline");
   const noteInput = document.getElementById("note");
   const notificationInput = document.getElementById("notification");
@@ -16,29 +15,28 @@ function saveAirline() {
   const logoInput = document.getElementById("logo");
   const editIndexInput = document.getElementById("editIndex");
 
-  // Get values
-  let airline = airlineInput.value.trim();
-  let note = noteInput.value.trim();
-  let notification = notificationInput.value.trim();
-  let discount = discountInput.value.trim();
-  let category = categoryInput.value;
-  let editIndex = editIndexInput.value;
+  const airline = airlineInput.value.trim();
+  const note = noteInput.value.trim();
+  const notification = notificationInput.value.trim();
+  const discount = discountInput.value.trim();
+  const category = categoryInput.value;
+  const editIndex = editIndexInput.value;
 
   if (!airline || !discount) {
-    alert("Airline & Discount are required!");
+    alert("Airline & Discount required!");
     return;
   }
 
-  // Auto Validity: 7 days from today
-  let today = new Date();
-  let validityDate = new Date();
+  // Auto-validity: 7 days from today
+  const today = new Date();
+  const validityDate = new Date(today);
   validityDate.setDate(today.getDate() + 7);
-  let options = { year: "numeric", month: "long", day: "numeric" };
-  let validity = validityDate.toLocaleDateString("en-US", options);
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  const validity = validityDate.toLocaleDateString("en-US", options);
 
-  // Save record function
+  // Function to save record (after reading logo)
   const saveRecord = (logoData) => {
-    let record = {
+    const record = {
       airline,
       note,
       notification,
@@ -52,7 +50,6 @@ function saveAirline() {
       data.push(record);
     } else {
       data[editIndex] = record;
-      editIndexInput.value = "";
     }
 
     saveToStorage();
@@ -60,15 +57,15 @@ function saveAirline() {
     render();
   };
 
-  // Handle logo upload asynchronously
+  // Handle file upload
   if (logoInput.files.length > 0) {
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = function () {
       saveRecord(reader.result);
     };
     reader.readAsDataURL(logoInput.files[0]);
   } else {
-    saveRecord(""); // Save without logo
+    saveRecord(""); // No logo
   }
 }
 
@@ -102,22 +99,22 @@ function render() {
   cashGrid.innerHTML = "";
   creditGrid.innerHTML = "";
 
-  let today = new Date();
+  const today = new Date();
 
   data.forEach((a, i) => {
-    // Set default validity if missing
+    // Default validity if missing
     if (!a.validity) {
-      let defaultDate = new Date();
+      const defaultDate = new Date();
       defaultDate.setDate(today.getDate() + 7);
-      let options = { year: "numeric", month: "long", day: "numeric" };
+      const options = { year: "numeric", month: "long", day: "numeric" };
       a.validity = defaultDate.toLocaleDateString("en-US", options);
     }
 
-    // Check if expired
-    let cardDate = new Date(a.validity);
-    let validityClass = cardDate < today ? "expired" : "";
+    // Expired check
+    const cardDate = new Date(a.validity);
+    const validityClass = cardDate < today ? "expired" : "";
 
-    let card = `
+    const card = `
       <div class="card">
         <div class="discount">${a.discount}</div>
         ${a.logo ? `<img src="${a.logo}">` : ""}
@@ -126,7 +123,7 @@ function render() {
           ${a.note}
           ${a.notification ? `<span class="notice">${a.notification}</span>` : ""}
         </p>
-        ${a.validity ? `<p class="validity ${validityClass}">Valid till: ${a.validity}</p>` : ""}
+        <p class="validity ${validityClass}">Valid till: ${a.validity}</p>
         <div class="actions">
           <span onclick="edit(${i})">Edit</span>
           <span onclick="del(${i})">Delete</span>
@@ -141,15 +138,14 @@ function render() {
     }
   });
 
-  // Save any auto-updated validity back to storage
   saveToStorage();
 }
 
 // ========================
-// EDIT & DELETE FUNCTIONS
+// EDIT & DELETE
 // ========================
 function edit(i) {
-  let a = data[i];
+  const a = data[i];
   document.getElementById("airline").value = a.airline;
   document.getElementById("note").value = a.note;
   document.getElementById("notification").value = a.notification || "";
@@ -167,37 +163,7 @@ function del(i) {
 }
 
 // ========================
-// SAVE AS IMAGE FUNCTION
-// ========================
-function saveAsImage() {
-  document.body.classList.add("print-mode");
-
-  const sheet = document.getElementById("sheet");
-
-  html2canvas(sheet, {
-    scale: 3,
-    backgroundColor: "#ffffff",
-    useCORS: true,
-    windowWidth: sheet.scrollWidth,
-    windowHeight: sheet.scrollHeight
-  }).then(canvas => {
-    const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
-    const filename = `QFC-Airline-Discount-${timestamp}.jpg`;
-
-    const link = document.createElement("a");
-    link.href = canvas.toDataURL("image/jpeg", 0.95);
-    link.download = filename;
-    link.click();
-
-    document.body.classList.remove("print-mode");
-  }).catch(err => {
-    alert("Error generating image: " + err);
-    document.body.classList.remove("print-mode");
-  });
-}
-
-// ========================
-// LOCK / UNLOCK EDIT PANEL
+// LOCK PANEL
 // ========================
 window.addEventListener("DOMContentLoaded", () => {
   const lockBtn = document.getElementById("lockBtn");
@@ -219,6 +185,26 @@ window.addEventListener("DOMContentLoaded", () => {
       : "🔒 Lock Edit Panel";
   });
 });
+
+// ========================
+// SAVE AS IMAGE
+// ========================
+function saveAsImage() {
+  document.body.classList.add("print-mode");
+  const sheet = document.getElementById("sheet");
+
+  html2canvas(sheet, { scale: 3, backgroundColor: "#fff", useCORS: true }).then(canvas => {
+    const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
+    const filename = `QFC-Airline-Discount-${timestamp}.jpg`;
+
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/jpeg", 0.95);
+    link.download = filename;
+    link.click();
+
+    document.body.classList.remove("print-mode");
+  });
+}
 
 // ========================
 // INITIAL RENDER
