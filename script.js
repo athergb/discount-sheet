@@ -140,3 +140,25 @@ function saveAsImage() {
     document.body.classList.remove("print-mode");
   });
 }
+
+// ========================
+// LOCK / UNLOCK EDIT PANEL
+// ========================
+const lockBtn = document.getElementById("lockBtn");
+const controlsSection = document.querySelector(".controls");
+
+let isLocked = false;
+
+lockBtn.addEventListener("click", () => {
+  isLocked = !isLocked;
+
+  // Toggle all inputs, selects, and save button inside controls
+  controlsSection.querySelectorAll("input, select, button").forEach(el => {
+    if (el.id !== "lockBtn") el.disabled = isLocked;
+  });
+
+  // Update lock button text
+  lockBtn.textContent = isLocked ? "🔓 Unlock Edit Panel" : "🔒 Lock Edit Panel";
+});
+
+
