@@ -116,26 +116,27 @@ window.onload = function () {
 };
 
 function saveAsImage() {
-  const sheet = document.getElementById("sheet");
 
-  if (!sheet) {
-    alert("Sheet container not found");
-    return;
-  }
+  // 1️⃣ ENABLE PRINT MODE (hide buttons, stabilize layout)
+  document.body.classList.add("print-mode");
+
+  const sheet = document.getElementById("sheet");
 
   html2canvas(sheet, {
     scale: 2,
+    backgroundColor: "#ffffff",
     useCORS: true,
-    backgroundColor: "#ffffff"
+    windowWidth: sheet.scrollWidth,
+    windowHeight: sheet.scrollHeight
   }).then(canvas => {
+
+    // 2️⃣ SAVE JPG
     const link = document.createElement("a");
     link.href = canvas.toDataURL("image/jpeg", 0.95);
-    link.download = "airline-discount-sheet.jpg";
-    document.body.appendChild(link);
+    link.download = "QFC-Airline-Discount-Sheet.jpg";
     link.click();
-    document.body.removeChild(link);
-  }).catch(err => {
-    console.error(err);
-    alert("Image export failed. Check console.");
+
+    // 3️⃣ DISABLE PRINT MODE (VERY IMPORTANT)
+    document.body.classList.remove("print-mode");
   });
 }
