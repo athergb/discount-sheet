@@ -22,21 +22,13 @@ function saveAirline() {
   const discount = discountInput.value.trim();
   const category = categoryInput.value;
   const editIndex = editIndexInput.value;
-  const validityRaw = validityInput.value; // YYYY-MM-DD from date picker
+  const validity = validityInput.value; // YYYY-MM-DD
 
-  if (!airline || !discount || !validityRaw) {
+  if (!airline || !discount || !validity) {
     alert("Airline, Discount, and Validity are required!");
     return;
   }
 
-  // Convert to human-readable format: "January 31, 2026"
-  const validity = new Date(validityRaw).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
-
-  // Function to save record after reading logo (if any)
   const saveRecord = (logoData) => {
     const record = {
       airline,
@@ -45,13 +37,13 @@ function saveAirline() {
       discount,
       category,
       logo: logoData || "",
-      validity
+      validity // store in YYYY-MM-DD format
     };
 
     if (editIndex === "") {
       data.push(record);
     } else {
-      data[editIndex] = record; // update the record correctly
+      data[editIndex] = record; // update record correctly
     }
 
     saveToStorage();
@@ -59,7 +51,6 @@ function saveAirline() {
     render();
   };
 
-  // Handle logo file asynchronously
   if (logoInput.files.length > 0) {
     const reader = new FileReader();
     reader.onload = function () {
@@ -67,7 +58,7 @@ function saveAirline() {
     };
     reader.readAsDataURL(logoInput.files[0]);
   } else {
-    saveRecord(""); // no logo
+    saveRecord("");
   }
 }
 
@@ -108,6 +99,13 @@ function render() {
     const cardDate = new Date(a.validity);
     const validityClass = cardDate < today ? "expired" : "";
 
+    // Display in human-readable format
+    const validityDisplay = cardDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+
     const card = `
       <div class="card">
         <div class="discount">${a.discount}</div>
@@ -117,7 +115,7 @@ function render() {
           ${a.note}
           ${a.notification ? `<span class="notice">${a.notification}</span>` : ""}
         </p>
-        <p class="validity ${validityClass}">Valid till: ${a.validity}</p>
+        <p class="validity ${validityClass}">Valid till: ${validityDisplay}</p>
         <div class="actions">
           <span onclick="edit(${i})">Edit</span>
           <span onclick="del(${i})">Delete</span>
@@ -146,12 +144,8 @@ function edit(i) {
   document.getElementById("discount").value = a.discount;
   document.getElementById("category").value = a.category;
 
-  // Convert "January 31, 2026" back to YYYY-MM-DD for date picker
-  const parts = new Date(a.validity);
-  const yyyy = parts.getFullYear();
-  const mm = String(parts.getMonth() + 1).padStart(2, "0");
-  const dd = String(parts.getDate()).padStart(2, "0");
-  document.getElementById("validity").value = `${yyyy}-${mm}-${dd}`;
+  // Directly assign YYYY-MM-DD to date input
+  document.getElementById("validity").value = a.validity;
 
   document.getElementById("editIndex").value = i;
 }
