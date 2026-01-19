@@ -1,26 +1,36 @@
 let data = JSON.parse(localStorage.getItem("airlineData")) || [];
 
 function saveAirline() {
-  let airline = document.getElementById("airline").value.trim();
-  let note = document.getElementById("note").value.trim();
-  let notification = document.getElementById("notification").value.trim();
-  let discount = document.getElementById("discount").value.trim();
-  let category = document.getElementById("category").value;
-  let logoInput = document.getElementById("logo");
-  let editIndex = document.getElementById("editIndex").value;
+  // Get all form elements explicitly
+  const airlineInput = document.getElementById("airline");
+  const noteInput = document.getElementById("note");
+  const notificationInput = document.getElementById("notification");
+  const discountInput = document.getElementById("discount");
+  const categoryInput = document.getElementById("category");
+  const logoInput = document.getElementById("logo");
+  const editIndexInput = document.getElementById("editIndex");
 
+  // Get values
+  let airline = airlineInput.value.trim();
+  let note = noteInput.value.trim();
+  let notification = notificationInput.value.trim();
+  let discount = discountInput.value.trim();
+  let category = categoryInput.value;
+  let editIndex = editIndexInput.value;
+  
   if (!airline || !discount) {
     alert("Airline & Discount required");
     return;
   }
 
-// Auto Validity: 7 days from today
+// ✅ Auto Validity: 7 days from today
   let today = new Date();
-  let validityDate = new Date(today.setDate(today.getDate() + 7));
+  let validityDate = new Date();
+  validityDate.setDate(today.getDate() + 7);
   let options = { year: "numeric", month: "long", day: "numeric" };
   let validity = validityDate.toLocaleDateString("en-US", options);
-
-  // Function to actually save the record
+  
+  / Function to save the record after reading logo (if any)
   const saveRecord = (logoData) => {
     let record = {
       airline,
@@ -28,7 +38,7 @@ function saveAirline() {
       notification,
       discount,
       category,
-      logo: logoData || "", // default empty if no file
+      logo: logoData || "",
       validity
     };
 
@@ -36,7 +46,7 @@ function saveAirline() {
       data.push(record);
     } else {
       data[editIndex] = record;
-      document.getElementById("editIndex").value = "";
+      editIndexInput.value = "";
     }
 
     saveToStorage();
@@ -44,17 +54,18 @@ function saveAirline() {
     render();
   };
 
-  // Handle file upload
+   // Handle logo file (asynchronous)
   if (logoInput.files.length > 0) {
     let reader = new FileReader();
     reader.onload = function () {
-      saveRecord(reader.result);
+      saveRecord(reader.result); // Save with logo
     };
     reader.readAsDataURL(logoInput.files[0]);
   } else {
-    saveRecord(""); // no logo
+    saveRecord(""); // Save without logo
   }
 }
+
   
   let reader = new FileReader();
 
@@ -158,13 +169,16 @@ function del(i) {
 }
 
 function clearForm() {
-  airline.value = "";
-  note.value = "";
-  notification.value = "";
-  discount.value = "";
-  logo.value = "";
-  validity.value = ""; // ✅ reset validity
+  document.getElementById("airline").value = "";
+  document.getElementById("note").value = "";
+  document.getElementById("notification").value = "";
+  document.getElementById("discount").value = "";
+  document.getElementById("logo").value = "";
+  document.getElementById("validity").value = "";
+  document.getElementById("category").value = "cash";
+  document.getElementById("editIndex").value = "";
 }
+
 
 function saveToStorage() {
   localStorage.setItem("airlineData", JSON.stringify(data));
@@ -230,6 +244,56 @@ window.addEventListener("DOMContentLoaded", () => {
       : "🔒 Lock Edit Panel";
   });
 });
+
+function render() {
+  const cashGrid = document.getElementById("cashGrid");
+  const creditGrid = document.getElementById("creditGrid");
+
+  cashGrid.innerHTML = "";
+  creditGrid.innerHTML = "";
+
+  let today = new Date();
+
+  data.forEach((a, i) => {
+    // Add default validity for old records
+    if (!a.validity) {
+      let defaultDate = new Date();
+      defaultDate.setDate(today.getDate() + 7);
+      let options = { year: "numeric", month: "long", day: "numeric" };
+      a.validity = defaultDate.toLocaleDateString("en-US", options);
+    }
+
+    let cardDate = new Date(a.validity);
+    let validityClass = cardDate < today ? "expired" : "";
+
+    let card = `
+      <div class="card">
+        <div class="discount">${a.discount}</div>
+        ${a.logo ? `<img src="${a.logo}">` : ""}
+        <p><b>${a.airline}</b></p>
+        <p>
+          ${a.note}
+          ${a.notification ? `<span class="notice">${a.notification}</span>` : ""}
+        </p>
+        ${a.validity ? `<p class="validity ${validityClass}">Valid till: ${a.validity}</p>` : ""}
+        <div class="actions">
+          <span onclick="edit(${i})">Edit</span>
+          <span onclick="del(${i})">Delete</span>
+        </div>
+      </div>
+    `;
+
+    if (a.category === "cash") {
+      cashGrid.innerHTML += card;
+    } else {
+      creditGrid.innerHTML += card;
+    }
+  });
+
+  // Save any auto-added validity back to localStorage
+  saveToStorage();
+}
+
 
 
 
