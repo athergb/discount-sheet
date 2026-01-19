@@ -8,6 +8,7 @@ function saveAirline() {
   let category = document.getElementById("category").value;
   let logoInput = document.getElementById("logo");
   let editIndex = document.getElementById("editIndex").value;
+  let validity = document.getElementById("validity").value;
 
   if (!airline || !discount) {
     alert("Airline & Discount required");
@@ -24,6 +25,7 @@ function saveAirline() {
       discount,
       category,
       logo: reader.result || ""
+      validity // ✅ save validity
     };
 
     if (editIndex === "") {
@@ -88,6 +90,7 @@ function edit(i) {
   document.getElementById("notification").value = a.notification || "";
   document.getElementById("discount").value = a.discount;
   document.getElementById("category").value = a.category;
+  document.getElementById("validity").value = a.validity || ""; // ✅ add this
   document.getElementById("editIndex").value = i;
 }
 
@@ -105,6 +108,7 @@ function clearForm() {
   notification.value = "";
   discount.value = "";
   logo.value = "";
+  validity.value = ""; // ✅ reset validity
 }
 
 function saveToStorage() {
@@ -171,4 +175,5 @@ window.addEventListener("DOMContentLoaded", () => {
       : "🔒 Lock Edit Panel";
   });
 });
+
 
