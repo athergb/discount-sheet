@@ -198,5 +198,13 @@ h2, h3 {
   border: 1px solid #ccc;
 }
 
+.card .validity {
+  font-size: 12px;
+  color: #0b5ed7;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+
 
 
