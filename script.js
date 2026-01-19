@@ -123,20 +123,27 @@ function saveAsImage() {
   const sheet = document.getElementById("sheet");
 
   html2canvas(sheet, {
-    scale: 2,
+    scale: 3,
     backgroundColor: "#ffffff",
     useCORS: true,
     windowWidth: sheet.scrollWidth,
     windowHeight: sheet.scrollHeight
   }).then(canvas => {
 
-    // 2️⃣ SAVE JPG
+    // 2️⃣ CREATE TIMESTAMPED FILE NAME
+    const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
+    const filename = `QFC-Airline-Discount-${timestamp}.jpg`;
+
+    // 3️⃣ DOWNLOAD JPG
     const link = document.createElement("a");
     link.href = canvas.toDataURL("image/jpeg", 0.95);
-    link.download = "QFC-Airline-Discount-Sheet.jpg";
+    link.download = filename;
     link.click();
 
-    // 3️⃣ DISABLE PRINT MODE (VERY IMPORTANT)
+    // 4️⃣ DISABLE PRINT MODE
+    document.body.classList.remove("print-mode");
+  }).catch(err => {
+    alert("Error generating image: " + err);
     document.body.classList.remove("print-mode");
   });
 }
@@ -164,3 +171,4 @@ window.addEventListener("DOMContentLoaded", () => {
       : "🔒 Lock Edit Panel";
   });
 });
+
