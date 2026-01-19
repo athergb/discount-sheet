@@ -45,6 +45,7 @@ h2, h3 {
   flex-wrap: wrap;
   gap: 18px;
   justify-content: center;      /* keeps cards centered */
+  align-items: stretch; /* Ensure all cards in a row have same height */
 }
 
 .card {
@@ -56,6 +57,9 @@ h2, h3 {
   box-sizing: border-box;
   position: relative;
   text-align: center;
+  display: flex;
+  flex-direction: column;     /* Make content stack vertically */
+  justify-content: space-between; /* Push actions to bottom */
 }
 
 .card img {
@@ -81,17 +85,22 @@ h2, h3 {
 .card p {
   margin: 5px 0;
   font-size: 13px;
+  word-wrap: break-word;     /* Prevent text overflow */
 }
 
 .card .actions {
-  text-align: right;
+  text-align: center;          /* Align edit/delete buttons */
   font-size: 12px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .card .actions span {
   cursor: pointer;
-  margin-left: 8px;
   color: #0aa6c0;
+  font-weight: 600;
 }
 
 .bottom-actions {
@@ -188,5 +197,6 @@ h2, h3 {
   cursor: not-allowed;
   border: 1px solid #ccc;
 }
+
 
 
