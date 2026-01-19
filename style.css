@@ -164,4 +164,29 @@ h2, h3 {
   width: fit-content;
 }
 
+/* Lock Edit Panel Button */
+#lockBtn {
+  background: #ff6b6b;       /* Red-ish for visibility */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#lockBtn:hover {
+  background: #ff4757;
+}
+
+/* Disabled inputs, selects, and save button styling */
+.controls input:disabled,
+.controls select:disabled,
+.controls button.save-btn:disabled {
+  background: #f0f0f0;
+  color: #888;
+  cursor: not-allowed;
+  border: 1px solid #ccc;
+}
+
 
