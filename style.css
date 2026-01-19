@@ -41,38 +41,41 @@ h2, h3 {
 }
 
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 12px;
-  margin-bottom: 30px;
+  display: flex;                /* 🔥 DO NOT use auto-fill grid */
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;      /* keeps cards centered */
 }
 
 .card {
-  background: #fff;
-  border-radius: 10px;
-  padding: 10px;
+  background: #ffffff;
+  border: 2px solid #0aa6c0;     /* 🔥 visible border in JPG */
+  border-radius: 14px;
+  padding: 12px;
+  width: 260px;                 /* 🔥 fixed width (prevents stretch) */
+  box-sizing: border-box;
   position: relative;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
 }
 
 .card img {
-  width: 130px;       /* increased size */
-  height: 60px;       /* increased size */
+  max-width: 140px;
+  max-height: 60px;
   object-fit: contain;
+  margin: 6px auto;
   display: block;
-  margin-bottom: 6px;
 }
-
 
 .card .discount {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -12px;
+  right: -12px;
   background: #0aa6c0;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 0 10px 0 10px;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 20px;
   font-weight: bold;
+  font-size: 13px;
 }
 
 .card p {
@@ -96,8 +99,10 @@ h2, h3 {
 }
 
 @media print {
-  .controls, .actions, .bottom-actions {
-    display: none;
+  .actions,
+  .controls,
+  .bottom-actions {
+    display: none !important;
   }
 }
 
@@ -110,4 +115,10 @@ h2, h3 {
   border-radius: 4px;
   margin-left: 5px;
   font-weight: bold;
+}
+
+.print-mode .actions,
+.print-mode .controls,
+.print-mode .bottom-actions {
+  display: none !important;
 }
