@@ -206,14 +206,22 @@ h2, h3 {
 }
 
 #sheet {
-  background-image: url("background.jpg"); /* your image */
+  background-image: url('your-background.png');
   background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
+  background-position: center;
+}
 
   /* VERY IMPORTANT */
   background-color: transparent;
 }
+
+.expired {
+  opacity: 0.6;
+  color: red;
+}
+
+
 
 
 
