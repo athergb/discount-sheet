@@ -113,7 +113,7 @@
   display: inline-block;                     /* shrink-wrap to content */
   text-align: center;                        /* center text */
   font-weight: bold;                         /* bold */
-  font-size: 32px;                           /* big and prominent */
+  font-size: 25px;                           /* big and prominent */
   color: #222;                               /* dark color for readability */
   background-color: rgba(255, 255, 0, 0.4); /* subtle yellow highlight */
   padding: 12px 20px;                        /* space around text */
@@ -201,6 +201,7 @@
     margin: 0;
   }
 }
+
 
 
 
