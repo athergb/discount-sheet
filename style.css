@@ -64,6 +64,21 @@
 /* =========================
    SHEET
 ========================= */
+/* Flex container for logo + GDS */
+.sheet-top-row {
+  display: flex;
+  justify-content: space-between;  /* logo left, GDS right */
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 20px;                /* optional horizontal padding */
+}
+
+/* QFC logo on left */
+.sheet-logo .main-logo {
+  height: 150px;                  /* keep previous size */
+  width: auto;
+  display: block;
+}
 #sheet {
   position: relative;
   background-color: #ffffff; /* fallback for canvas */
@@ -81,10 +96,9 @@
 /* GDS LOGOS CONTAINER */
 .gds-logos {
   display: flex;
-  justify-content: center;  /* center all logos horizontally */
+  justify-content: flex-end;  /* center all logos horizontally */
   align-items: center;      /* vertical alignment */
   gap: 30px;                /* spacing between logos */
-  margin: 15px 0;
 }
 
 /* INDIVIDUAL LOGO BOX */
@@ -200,6 +214,7 @@
     margin: 0;
   }
 }
+
 
 
 
