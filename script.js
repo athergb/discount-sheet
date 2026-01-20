@@ -1,18 +1,20 @@
 // ========================
 // MANAGER ACCESS
 // ========================
-const MANAGER_KEY = "QFCAirline123"; // change this to your secret password
+const MANAGER_KEY = "QFCAirline123"; // Change this to your secret
 let isManager = false;
 
 // ========================
 // DATA STORAGE
 // ========================
-let data = JSON.parse(localStorage.getItem("airlineData")) || [];
+let data = [];
 
 // ========================
 // SAVE AIRLINE FUNCTION
 // ========================
 function saveAirline() {
+  if (!isManager) return; // Only manager can save
+
   const airlineInput = document.getElementById("airline");
   const noteInput = document.getElementById("note");
   const notificationInput = document.getElementById("notification");
@@ -43,7 +45,7 @@ function saveAirline() {
       discount,
       category,
       logo: logoData || "",
-      validity // store exact YYYY-MM-DD
+      validity
     };
 
     if (editIndex === "") {
@@ -86,7 +88,9 @@ function clearForm() {
 // LOCAL STORAGE
 // ========================
 function saveToStorage() {
-  localStorage.setItem("airlineData", JSON.stringify(data));
+  if (isManager) {
+    localStorage.setItem("airlineData", JSON.stringify(data));
+  }
 }
 
 // ========================
@@ -105,7 +109,6 @@ function render() {
     const cardDate = new Date(a.validity);
     const validityClass = cardDate < today ? "expired" : "";
 
-    // Display date nicely
     const validityDisplay = cardDate.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -141,31 +144,30 @@ function render() {
     }
   });
 
-  // Only show edit panel for manager
+  // Hide edit panel for viewers
   const controls = document.querySelector(".controls");
   if (!isManager) controls.style.display = "none";
-
-  saveToStorage();
 }
 
 // ========================
 // EDIT & DELETE
 // ========================
 function edit(i) {
+  if (!isManager) return;
+
   const a = data[i];
   document.getElementById("airline").value = a.airline;
   document.getElementById("note").value = a.note;
   document.getElementById("notification").value = a.notification || "";
   document.getElementById("discount").value = a.discount;
   document.getElementById("category").value = a.category;
-
-  // Directly assign stored YYYY-MM-DD
   document.getElementById("validity").value = a.validity;
-
   document.getElementById("editIndex").value = i;
 }
 
 function del(i) {
+  if (!isManager) return;
+
   if (confirm("Delete this airline?")) {
     data.splice(i, 1);
     saveToStorage();
@@ -186,11 +188,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
   lockBtn.addEventListener("click", () => {
     isLocked = !isLocked;
-
     controlsSection.querySelectorAll("input, select, button").forEach(el => {
       if (el.id !== "lockBtn") el.disabled = isLocked;
     });
-
     lockBtn.textContent = isLocked
       ? "🔓 Unlock Edit Panel"
       : "🔒 Lock Edit Panel";
@@ -207,7 +207,7 @@ function saveAsImage() {
   html2canvas(sheet, {
     scale: 3,
     useCORS: true,
-    backgroundColor: null // allow background image
+    backgroundColor: null // Use background image if set in CSS
   }).then(canvas => {
     const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
     const filename = `QFC-Airline-Discount-${timestamp}.jpg`;
@@ -221,19 +221,19 @@ function saveAsImage() {
   });
 }
 
-
 // ========================
-// INITIAL RENDER
+// INITIAL LOAD
 // ========================
 window.onload = function() {
   const userKey = prompt("Enter manager key (leave blank if viewing only):");
   if (userKey === MANAGER_KEY) {
     isManager = true;
-  } 
+  }
+
   fetch('airlineData.json')
     .then(res => res.json())
     .then(json => {
-      data = json; // load from GitHub
+      data = json; // Load from GitHub
       render();
     })
     .catch(err => {
@@ -242,28 +242,3 @@ window.onload = function() {
       render();
     });
 };
-
-function applyPermissions() {
-  const controls = document.querySelector(".controls");
-  const actionButtons = document.querySelectorAll(".actions span");
-
-  if (!isManager) {
-    // Hide the edit panel entirely
-    controls.style.display = "none";
-
-    // Hide edit/delete buttons in cards
-    actionButtons.forEach(btn => btn.style.display = "none");
-
-    // Hide lock button for viewers
-    const lockBtn = document.getElementById("lockBtn");
-    if (lockBtn) lockBtn.style.display = "none";
-  } else {
-    // Show controls and action buttons for manager
-    controls.style.display = "flex";
-    actionButtons.forEach(btn => btn.style.display = "inline");
-  }
-}
-
-
-
-
