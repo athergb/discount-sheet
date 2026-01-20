@@ -1,236 +1,89 @@
 /* =========================
-   RESET
+   PROFESSIONAL AIRLINE CARD
 ========================= */
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-/* =========================
-   TOP HEADER
-========================= */
-.top-header {
-  display: flex;
-  flex-direction: column; /* stack logo above title */
-  align-items: center;    /* center horizontally */
-  justify-content: center;
-  text-align: center;
-  margin-bottom: 20px;
-  gap: 10px;              /* spacing between logo and title */
-}
-
-.top-header .main-logo {
-  height: 120px;          /* increased size */
-  width: auto;
-  display: block;
-}
-
-/* =========================
-   CONTROLS
-========================= */
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 15px;
-}
-
-.controls input,
-.controls select,
-.controls button {
-  padding: 6px 8px;
-  font-size: 14px;
-}
-
-/* =========================
-   SHEET TOP ROW: QFC + GDS
-========================= */
-.sheet-top-row {
-  display: flex;
-  justify-content: space-between; /* QFC left, GDS right */
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 0 20px;               /* horizontal spacing */
-}
-
-/* QFC logo on left */
-.sheet-logo .main-logo {
-  height: 150px;                 /* keep previous size */
-  width: auto;
-  display: block;
-}
-
-/* GDS logos on right */
-.gds-logos {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 30px;                     /* spacing between logos */
-}
-
-/* GDS logo container */
-.logo-box {
-  width: 140px;                  /* container width */
-  height: 100px;                 /* container height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 5px;
-}
-
-/* GDS logo image */
-.logo-box img {
-  width: 100% !important;        /* fill container */
-  height: 100% !important;       /* fill container */
-  object-fit: contain;
-  display: block;
-}
-
-/* =========================
-   SHEET
-========================= */
-#sheet {
-  position: relative;
-  background-color: #ffffff; /* fallback for canvas */
-  background-image: url("background.jpg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  padding: 20px;
-  overflow: hidden;
-}
-
-/* =========================
-   TEXT
-========================= */
-.gds-offer-text {
-  display: inline-block;                     /* shrink-wrap to content */
-  text-align: center;                        /* center text */
-  font-weight: bold;                         /* bold */
-  font-size: 25px;                           /* big and prominent */
-  color: #222;                               /* dark color for readability */
-  background-color: rgba(255, 255, 0, 0.4); /* subtle yellow highlight */
-  padding: 12px 20px;                        /* space around text */
-  border-radius: 10px;                       /* rounded corners */
-  margin: 20px auto;                         /* center horizontally & spacing */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);    /* subtle shadow for depth */
-  max-width: 90%;                             /* prevents overflow on small screens */
-}
-
-/* =========================
-   GRID & AIRLINE CARDS
-========================= */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* responsive grid */
-  gap: 16px;               /* spacing between cards */
-  margin-bottom: 20px;
-}
-
 .card {
-  background: rgba(255, 255, 255, 0.98);   /* bright card background */
-  padding: 15px 12px;                       /* more padding */
-  border-radius: 10px;                       /* rounded corners */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* soft shadow for depth */
-  border: none;
+  position: relative;                      /* for discount tag */
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  overflow: hidden;
+  padding: 20px 15px 50px 15px;           /* extra bottom padding for actions */
   display: flex;
   flex-direction: column;
-  align-items: center;                       /* center content inside card */
+  align-items: center;
   justify-content: flex-start;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Hover effect for interactivity */
+/* Hover effect */
 .card:hover {
-  transform: translateY(-4px);              /* subtle lift */
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
-/* Airline logo inside card */
+/* DISCOUNT TAG */
+.discount {
+  position: absolute;
+  top: 10px;
+  left: -10px;                             /* half outside container */
+  background: #ffeb3b;
+  color: #222;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  font-size: 18px;
+  z-index: 2;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+/* AIRLINE LOGO */
 .card img {
-  max-width: 120px;     /* increase logo width */
-  max-height: 80px;     /* increase logo height */
+  max-width: 140px;     /* larger logo */
+  max-height: 100px;
   width: auto;
   height: auto;
   object-fit: contain;
   display: block;
-  margin-bottom: 10px;
-}
-
-/* Discount text inside card */
-.discount {
-  font-weight: bold;
-  font-size: 20px;      /* slightly larger for prominence */
-  margin-bottom: 8px;
-  text-align: center;
+  margin: 50px 0 10px 0;                     /* spacing for discount tag */
 }
 
 /* Airline name */
 .card p:first-of-type {
   font-weight: bold;
   font-size: 16px;
-  margin-bottom: 6px;
   text-align: center;
+  margin-bottom: 6px;
 }
 
-/* Note & notification */
+/* Notification / note below name */
 .card p:last-of-type {
   font-size: 14px;
   text-align: center;
 }
 
 .notice {
+  display: inline-block;
   color: black;
   font-weight: bold;
-  background-color: yellow; /* highlight notifications */
+  background-color: yellow; /* highlight */
   padding: 2px 4px;
-  border-radius: 3px;
-  margin-left: 5px;
+  border-radius: 4px;
+  margin-left: 4px;
 }
 
-/* Validity */
-.validity {
-  font-size: 13px;
-  margin-top: 6px;
-}
-
-.expired {
-  color: red;
-  font-weight: bold;
+/* Actions (Edit / Delete) */
+.actions {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
 }
 
 .actions span {
   cursor: pointer;
-  margin-right: 10px;
-  color: blue;
   font-size: 13px;
+  color: blue;
   user-select: none;
 }
-
-.bottom-actions {
-  text-align: center;
-  margin: 15px 0;
-}
-
-/* PRINT */
-@media print {
-  .controls,
-  .bottom-actions {
-    display: none !important;
-  }
-
-  body {
-    margin: 0;
-  }
-}
-
-
-
-
-
