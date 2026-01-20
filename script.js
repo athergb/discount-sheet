@@ -5,8 +5,9 @@ const MANAGER_KEY = "QFCAirline123";
 let isManager = false;
 let data = [];
 let GITHUB_TOKEN = "";
+
 // ========================
-// ELEMENTS (FIXED)
+// ELEMENTS
 // ========================
 const airlineInput = document.getElementById("airline");
 const noteInput = document.getElementById("note");
@@ -20,6 +21,41 @@ const logoInput = document.getElementById("logo");
 const cashGrid = document.getElementById("cashGrid");
 const creditGrid = document.getElementById("creditGrid");
 const sheet = document.getElementById("sheet");
+
+// ========================
+// MANAGER LOGIN + GITHUB TOKEN
+// ========================
+window.onload = async () => {
+  const key = prompt("Enter manager key (leave blank to view)");
+  isManager = key === MANAGER_KEY;
+
+  if (isManager) {
+    GITHUB_TOKEN = prompt("Enter GitHub Token (required to sync)");
+
+    const saved = localStorage.getItem("airlineData");
+    if (saved) {
+      data = JSON.parse(saved);
+      render();
+    } else {
+      await loadFromGitHub();
+    }
+  } else {
+    await loadFromGitHub();
+  }
+};
+
+// ========================
+// LOAD DATA FROM GITHUB
+// ========================
+async function loadFromGitHub() {
+  try {
+    const res = await fetch("airlineData.json");
+    data = await res.json();
+  } catch {
+    data = [];
+  }
+  render();
+}
 
 // ========================
 // SAVE AIRLINE
@@ -57,9 +93,9 @@ function saveAirline() {
     else data[editIndex] = record;
 
     localStorage.setItem("airlineData", JSON.stringify(data));
-updateGitHubJSON();
-clearForm();
-render();
+    updateGitHubJSON(); // <-- GitHub sync
+    clearForm();
+    render();
   };
 
   if (logoInput.files.length) {
@@ -141,6 +177,7 @@ function del(i) {
   if (confirm("Delete this airline?")) {
     data.splice(i, 1);
     localStorage.setItem("airlineData", JSON.stringify(data));
+    updateGitHubJSON();
     render();
   }
 }
@@ -161,7 +198,7 @@ function clearForm() {
 }
 
 // ========================
-// SAVE AS JPG (FIXED BACKGROUND)
+// SAVE AS JPG
 // ========================
 function saveAsImage() {
   html2canvas(sheet, {
@@ -177,33 +214,37 @@ function saveAsImage() {
 }
 
 // ========================
-// INIT
+// UPDATE GITHUB
 // ========================
-window.onload = async () => {
-  const key = prompt("Enter manager key (leave blank to view)");
-  isManager = key === MANAGER_KEY;
+async function updateGitHubJSON() {
+  if (!isManager || !GITHUB_TOKEN) return;
 
-  if (isManager) {
-    GITHUB_TOKEN = prompt("Enter GitHub Token (required to sync)");
+  const owner = "athergb";
+  const repo = "discount-sheet";
+  const path = "airlineData.json";
 
-    const saved = localStorage.getItem("airlineData");
-    if (saved) {
-      data = JSON.parse(saved);
-      render();
-    } else {
-      await loadFromGitHub();
-    }
-  } else {
-    await loadFromGitHub();
-  }
-};
-async function loadFromGitHub() {
-  try {
-    const res = await fetch("airlineData.json");
-    data = await res.json();
-  } catch {
-    data = [];
-  }
-  render();
+  const apiURL = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+  const fileRes = await fetch(apiURL, {
+    headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
+  });
+
+  const fileData = await fileRes.json();
+
+  const content = btoa(
+    unescape(encodeURIComponent(JSON.stringify(data, null, 2)))
+  );
+
+  await fetch(apiURL, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "Update airline discount data",
+      content,
+      sha: fileData.sha
+    })
+  });
 }
-
