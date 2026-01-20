@@ -6,12 +6,28 @@ let isManager = false;
 let data = [];
 
 // ========================
+// ELEMENTS (FIXED)
+// ========================
+const airlineInput = document.getElementById("airline");
+const noteInput = document.getElementById("note");
+const notificationInput = document.getElementById("notification");
+const discountInput = document.getElementById("discount");
+const categoryInput = document.getElementById("category");
+const validityInput = document.getElementById("validity");
+const editIndexInput = document.getElementById("editIndex");
+const logoInput = document.getElementById("logo");
+
+const cashGrid = document.getElementById("cashGrid");
+const creditGrid = document.getElementById("creditGrid");
+const sheet = document.getElementById("sheet");
+
+// ========================
 // SAVE AIRLINE
 // ========================
 function saveAirline() {
   if (!isManager) return;
 
-  const airline = airline.value.trim();
+  const airline = airlineInput.value.trim();
   const note = noteInput.value.trim();
   const notification = notificationInput.value.trim();
   const discount = discountInput.value.trim();
@@ -34,8 +50,9 @@ function saveAirline() {
     logo: ""
   };
 
-  const save = (logoData) => {
-    record.logo = logoData || "";
+  const saveRecord = (logoData = "") => {
+    record.logo = logoData;
+
     if (editIndex === "") data.push(record);
     else data[editIndex] = record;
 
@@ -44,11 +61,13 @@ function saveAirline() {
     render();
   };
 
-  if (logo.files.length) {
-    const r = new FileReader();
-    r.onload = () => save(r.result);
-    r.readAsDataURL(logo.files[0]);
-  } else save("");
+  if (logoInput.files.length) {
+    const reader = new FileReader();
+    reader.onload = () => saveRecord(reader.result);
+    reader.readAsDataURL(logoInput.files[0]);
+  } else {
+    saveRecord();
+  }
 }
 
 // ========================
@@ -59,33 +78,42 @@ function render() {
   creditGrid.innerHTML = "";
 
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
 
   data.forEach((a, i) => {
-    const [y,m,d] = a.validity.split("-");
-    const cardDate = new Date(y, m-1, d);
-    const expired = cardDate < today ? "expired" : "";
+    const [y, m, d] = a.validity.split("-");
+    const cardDate = new Date(y, m - 1, d);
+    cardDate.setHours(0, 0, 0, 0);
 
-    const displayDate = cardDate.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});
+    const isExpired = cardDate < today;
+    const displayDate = cardDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
 
-    const actions = isManager ? `
-      <div class="actions">
-        <span onclick="edit(${i})">Edit</span>
-        <span onclick="del(${i})">Delete</span>
-      </div>` : "";
+    const actions = isManager
+      ? `<div class="actions">
+           <span onclick="edit(${i})">Edit</span>
+           <span onclick="del(${i})">Delete</span>
+         </div>`
+      : "";
 
-    const html = `
-      <div class="card">
-        <div class="discount">${a.discount}</div>
-        ${a.logo ? `<img src="${a.logo}">` : ""}
-        <p><b>${a.airline}</b></p>
-        <p>${a.note} ${a.notification ? `<span class="notice">${a.notification}</span>` : ""}</p>
-        <p class="validity ${expired}">Valid till: ${displayDate}</p>
-        ${actions}
-      </div>
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="discount">${a.discount}</div>
+      ${a.logo ? `<img src="${a.logo}" loading="eager">` : ""}
+      <p><b>${a.airline}</b></p>
+      <p>${a.note || ""} ${a.notification ? `<span class="notice">${a.notification}</span>` : ""}</p>
+      <p class="validity ${isExpired ? "expired" : ""}">
+        Valid till: ${displayDate}
+      </p>
+      ${actions}
     `;
 
-    (a.category === "cash" ? cashGrid : creditGrid).innerHTML += html;
+    (a.category === "cash" ? cashGrid : creditGrid).appendChild(card);
   });
 
   document.querySelector(".controls").style.display = isManager ? "flex" : "none";
@@ -97,19 +125,20 @@ function render() {
 function edit(i) {
   if (!isManager) return;
   const a = data[i];
-  airline.value = a.airline;
-  note.value = a.note;
-  notification.value = a.notification;
-  discount.value = a.discount;
-  category.value = a.category;
-  validity.value = a.validity;
-  editIndex.value = i;
+
+  airlineInput.value = a.airline;
+  noteInput.value = a.note;
+  notificationInput.value = a.notification;
+  discountInput.value = a.discount;
+  categoryInput.value = a.category;
+  validityInput.value = a.validity;
+  editIndexInput.value = i;
 }
 
 function del(i) {
   if (!isManager) return;
-  if (confirm("Delete?")) {
-    data.splice(i,1);
+  if (confirm("Delete this airline?")) {
+    data.splice(i, 1);
     localStorage.setItem("airlineData", JSON.stringify(data));
     render();
   }
@@ -119,25 +148,30 @@ function del(i) {
 // UTIL
 // ========================
 function clearForm() {
-  airline.value = note.value = notification.value = discount.value = validity.value = "";
-  logo.value = "";
-  editIndex.value = "";
-  category.value = "cash";
+  airlineInput.value =
+  noteInput.value =
+  notificationInput.value =
+  discountInput.value =
+  validityInput.value = "";
+
+  logoInput.value = "";
+  editIndexInput.value = "";
+  categoryInput.value = "cash";
 }
 
 // ========================
-// SAVE AS JPG
+// SAVE AS JPG (FIXED BACKGROUND)
 // ========================
 function saveAsImage() {
-  html2canvas(sheet,{
-    scale:4,
-    useCORS:true,
-    backgroundColor:null
-  }).then(c=>{
-    const a=document.createElement("a");
-    a.href=c.toDataURL("image/jpeg",0.95);
-    a.download="QFC-Airline-Discount.jpg";
-    a.click();
+  html2canvas(sheet, {
+    scale: 3,
+    useCORS: true,
+    backgroundColor: "#ffffff"
+  }).then(canvas => {
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/jpeg", 0.95);
+    link.download = "QFC-Airline-Discount.jpg";
+    link.click();
   });
 }
 
@@ -147,10 +181,20 @@ function saveAsImage() {
 window.onload = () => {
   const key = prompt("Enter manager key (leave blank to view)");
   isManager = key === MANAGER_KEY;
-  data = isManager
-    ? JSON.parse(localStorage.getItem("airlineData")) || []
-    : [];
-  if (!isManager) {
-    fetch("airlineData.json").then(r=>r.json()).then(j=>{data=j;render();});
-  } else render();
+
+  if (isManager) {
+    try {
+      data = JSON.parse(localStorage.getItem("airlineData")) || [];
+    } catch {
+      data = [];
+    }
+    render();
+  } else {
+    fetch("airlineData.json")
+      .then(r => r.json())
+      .then(j => {
+        data = j;
+        render();
+      });
+  }
 };
