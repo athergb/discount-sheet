@@ -1,3 +1,4 @@
+/* General body & background */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -6,13 +7,18 @@ body {
   background-size: cover;
 }
 
+/* Header and logo */
 header, .controls, .bottom-actions {
   padding: 10px;
   text-align: center;
 }
 
-.main-logo { max-height: 60px; margin-bottom: 10px; }
+.main-logo {
+  max-height: 60px;
+  margin-bottom: 10px;
+}
 
+/* Controls panel */
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -23,11 +29,14 @@ header, .controls, .bottom-actions {
   border-radius: 10px;
 }
 
-.controls input, .controls select, .controls button {
+.controls input,
+.controls select,
+.controls button {
   padding: 5px;
   font-size: 14px;
 }
 
+/* Grids */
 .grid {
   display: flex;
   flex-wrap: wrap;
@@ -36,6 +45,7 @@ header, .controls, .bottom-actions {
   padding: 10px;
 }
 
+/* Card style */
 .card {
   background: rgba(255,255,255,0.9);
   padding: 10px;
@@ -45,24 +55,48 @@ header, .controls, .bottom-actions {
   position: relative;
 }
 
+/* Images inside cards */
 .card img {
-  max-width: 100px;
-  max-height: 50px;
+  max-width: 100%;
+  max-height: 50px;   /* Limit height */
+  object-fit: contain;
   margin: 5px 0;
 }
 
-.discount { font-weight: bold; font-size: 18px; color: green; }
+/* GDS logos */
+.gds-logos .logo-box img {
+  max-width: 60px;
+  max-height: 40px;
+  object-fit: contain;
+}
 
-.notice { color: orange; display: block; }
+/* Discount text */
+.discount {
+  font-weight: bold;
+  font-size: 18px;
+  color: green;
+}
 
-.validity.expired { color: red; font-weight: bold; }
+/* Notices */
+.notice {
+  color: orange;
+  display: block;
+}
 
+/* Expired validity */
+.validity.expired {
+  color: red;
+  font-weight: bold;
+}
+
+/* Action buttons */
 .actions span {
   margin: 5px;
   cursor: pointer;
   color: blue;
 }
 
+/* Bottom buttons */
 .bottom-actions {
   margin: 20px 0;
   text-align: center;
