@@ -1,4 +1,10 @@
 // ========================
+// MANAGER ACCESS
+// ========================
+const MANAGER_KEY = "QFCAirline123"; // change this to your secret password
+let isManager = false;
+
+// ========================
 // DATA STORAGE
 // ========================
 let data = JSON.parse(localStorage.getItem("airlineData")) || [];
@@ -212,6 +218,10 @@ function saveAsImage() {
 // INITIAL RENDER
 // ========================
 window.onload = function() {
+  const userKey = prompt("Enter manager key (leave blank if viewing only):");
+  if (userKey === MANAGER_KEY) {
+    isManager = true;
+  } 
   fetch('airlineData.json')
     .then(res => res.json())
     .then(json => {
@@ -224,5 +234,27 @@ window.onload = function() {
       render();
     });
 };
+
+function applyPermissions() {
+  const controls = document.querySelector(".controls");
+  const actionButtons = document.querySelectorAll(".actions span");
+
+  if (!isManager) {
+    // Hide the edit panel entirely
+    controls.style.display = "none";
+
+    // Hide edit/delete buttons in cards
+    actionButtons.forEach(btn => btn.style.display = "none");
+
+    // Hide lock button for viewers
+    const lockBtn = document.getElementById("lockBtn");
+    if (lockBtn) lockBtn.style.display = "none";
+  } else {
+    // Show controls and action buttons for manager
+    controls.style.display = "flex";
+    actionButtons.forEach(btn => btn.style.display = "inline");
+  }
+}
+
 
 
