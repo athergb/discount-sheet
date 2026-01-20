@@ -100,18 +100,25 @@ function render() {
   creditGrid.innerHTML = "";
 
   const today = new Date();
-  today.setHours(0,0,0,0); // ignore time
 
   data.forEach((a, i) => {
-    const [year, month, day] = a.validity.split("-");
-    const cardDate = new Date(year, month - 1, day); // local date
+    const cardDate = new Date(a.validity);
     const validityClass = cardDate < today ? "expired" : "";
 
+    // Display date nicely
     const validityDisplay = cardDate.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric"
     });
+
+    // Only show Edit/Delete if manager
+    const actionsHTML = isManager
+      ? `<div class="actions">
+           <span onclick="edit(${i})">Edit</span>
+           <span onclick="del(${i})">Delete</span>
+         </div>`
+      : "";
 
     const card = `
       <div class="card">
@@ -123,10 +130,7 @@ function render() {
           ${a.notification ? `<span class="notice">${a.notification}</span>` : ""}
         </p>
         <p class="validity ${validityClass}">Valid till: ${validityDisplay}</p>
-        <div class="actions">
-          <span onclick="edit(${i})">Edit</span>
-          <span onclick="del(${i})">Delete</span>
-        </div>
+        ${actionsHTML}
       </div>
     `;
 
@@ -136,6 +140,10 @@ function render() {
       creditGrid.innerHTML += card;
     }
   });
+
+  // Only show edit panel for manager
+  const controls = document.querySelector(".controls");
+  if (!isManager) controls.style.display = "none";
 
   saveToStorage();
 }
@@ -255,6 +263,7 @@ function applyPermissions() {
     actionButtons.forEach(btn => btn.style.display = "inline");
   }
 }
+
 
 
 
