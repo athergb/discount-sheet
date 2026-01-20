@@ -30,8 +30,9 @@
 
   <input type="file" id="logo" accept="image/*">
 
-  <button type="button" onclick="saveAirline()">Save</button>
-  <button type="button" id="lockBtn">🔒 Lock Edit Panel</button>
+  <button type="button" onclick="saveAirline()" class="manager-only">Save</button>
+  <button type="button" id="lockBtn" class="manager-only">🔒 Lock Edit Panel</button>
+
 </section>
 
 <div id="sheet">
@@ -71,3 +72,4 @@
 <script src="script.js"></script>
 </body>
 </html>
+
