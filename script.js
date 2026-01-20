@@ -199,22 +199,27 @@ window.addEventListener("DOMContentLoaded", () => {
 // ========================
 function saveAsImage() {
   document.body.classList.add("print-mode");
+  
   const sheet = document.getElementById("sheet");
 
   html2canvas(sheet, {
     scale: 3,
-    useCORS: true,
-    backgroundColor: null // Use background image if set in CSS
+    useCORS: true,          // needed for external images
+    allowTaint: true,       // allows cross-origin images if no CORS
+    backgroundColor: null   // keep background image
   }).then(canvas => {
     const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
     const filename = `QFC-Airline-Discount-${timestamp}.jpg`;
+
     const link = document.createElement("a");
     link.href = canvas.toDataURL("image/jpeg", 0.95);
     link.download = filename;
     link.click();
+
     document.body.classList.remove("print-mode");
   });
 }
+
 
 // ========================
 // APPLY VIEWER PERMISSIONS
@@ -264,3 +269,4 @@ window.onload = function() {
       });
   }
 };
+
