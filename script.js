@@ -211,5 +211,18 @@ function saveAsImage() {
 // ========================
 // INITIAL RENDER
 // ========================
-window.onload = render;
+window.onload = function() {
+  fetch('airlineData.json')
+    .then(res => res.json())
+    .then(json => {
+      data = json; // load from GitHub
+      render();
+    })
+    .catch(err => {
+      console.warn("GitHub JSON failed, fallback to localStorage:", err);
+      data = JSON.parse(localStorage.getItem("airlineData")) || [];
+      render();
+    });
+};
+
 
