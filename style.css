@@ -37,6 +37,20 @@
 }
 
 /* SHEET */
+
+.sheet-header {
+  display: flex;
+  justify-content: center;  /* center horizontally */
+  align-items: center;      /* center vertically if needed */
+  margin-bottom: 20px;      /* spacing below logo */
+}
+
+.sheet-header .main-logo {
+  height: 120px;            /* increase size */
+  width: auto;              /* maintain aspect ratio */
+  display: block;
+}
+
 #sheet {
   position: relative;
   background-color: #ffffff; /* fallback for canvas */
@@ -155,4 +169,5 @@
     margin: 0;
   }
 }
+
 
