@@ -1,7 +1,7 @@
 // ========================
 // MANAGER ACCESS
 // ========================
-const MANAGER_KEY = "QFCAirline123"; // Change this to your secret
+const MANAGER_KEY = "QFCAirline123"; // secret manager key
 let isManager = false;
 
 // ========================
@@ -13,7 +13,7 @@ let data = [];
 // SAVE AIRLINE FUNCTION
 // ========================
 function saveAirline() {
-  if (!isManager) return; // Only manager can save
+  if (!isManager) return; // only manager can save
 
   const airlineInput = document.getElementById("airline");
   const noteInput = document.getElementById("note");
@@ -45,13 +45,13 @@ function saveAirline() {
       discount,
       category,
       logo: logoData || "",
-      validity
+      validity // store exact YYYY-MM-DD
     };
 
     if (editIndex === "") {
       data.push(record);
     } else {
-      data[editIndex] = record;
+      data[editIndex] = record; // update existing
     }
 
     saveToStorage();
@@ -85,7 +85,7 @@ function clearForm() {
 }
 
 // ========================
-// LOCAL STORAGE
+// LOCAL STORAGE (for manager edits)
 // ========================
 function saveToStorage() {
   if (isManager) {
@@ -99,19 +99,17 @@ function saveToStorage() {
 function render() {
   const cashGrid = document.getElementById("cashGrid");
   const creditGrid = document.getElementById("creditGrid");
-
   cashGrid.innerHTML = "";
   creditGrid.innerHTML = "";
 
-  const todayDate = new Date();
-  todayDate.setHours(0, 0, 0, 0); // ignore time
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   data.forEach((a, i) => {
-    // Parse validity YYYY-MM-DD
+    // Parse manual YYYY-MM-DD
     const parts = a.validity.split("-");
     const cardDate = new Date(parts[0], parts[1] - 1, parts[2]);
-
-    const validityClass = cardDate < todayDate ? "expired" : "";
+    const validityClass = cardDate < today ? "expired" : "";
 
     const validityDisplay = cardDate.toLocaleDateString("en-US", {
       year: "numeric",
@@ -119,7 +117,6 @@ function render() {
       day: "numeric"
     });
 
-    // Show edit/delete only if manager
     const actionsHTML = isManager
       ? `<div class="actions">
            <span onclick="edit(${i})">Edit</span>
@@ -141,14 +138,11 @@ function render() {
       </div>
     `;
 
-    if (a.category === "cash") {
-      cashGrid.innerHTML += card;
-    } else {
-      creditGrid.innerHTML += card;
-    }
+    if (a.category === "cash") cashGrid.innerHTML += card;
+    else creditGrid.innerHTML += card;
   });
 
-  // Hide controls for viewers
+  // Only show controls for manager
   const controls = document.querySelector(".controls");
   if (!isManager) controls.style.display = "none";
 }
@@ -189,7 +183,6 @@ window.addEventListener("DOMContentLoaded", () => {
   if (!lockBtn) return;
 
   let isLocked = false;
-
   lockBtn.addEventListener("click", () => {
     isLocked = !isLocked;
     controlsSection.querySelectorAll("input, select, button").forEach(el => {
@@ -211,22 +204,20 @@ function saveAsImage() {
   html2canvas(sheet, {
     scale: 3,
     useCORS: true,
-    backgroundColor: null // keep CSS background image
+    backgroundColor: null // Use background image if set in CSS
   }).then(canvas => {
     const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
     const filename = `QFC-Airline-Discount-${timestamp}.jpg`;
-
     const link = document.createElement("a");
     link.href = canvas.toDataURL("image/jpeg", 0.95);
     link.download = filename;
     link.click();
-
     document.body.classList.remove("print-mode");
   });
 }
 
 // ========================
-// APPLY PERMISSIONS (VIEWER/MANAGER)
+// APPLY VIEWER PERMISSIONS
 // ========================
 function applyPermissions() {
   const controls = document.querySelector(".controls");
@@ -234,11 +225,11 @@ function applyPermissions() {
   const lockBtn = document.getElementById("lockBtn");
 
   if (!isManager) {
-    if (controls) controls.style.display = "none";
+    controls.style.display = "none";
     actionButtons.forEach(btn => btn.style.display = "none");
     if (lockBtn) lockBtn.style.display = "none";
   } else {
-    if (controls) controls.style.display = "flex";
+    controls.style.display = "flex";
     actionButtons.forEach(btn => btn.style.display = "inline");
     if (lockBtn) lockBtn.style.display = "inline-block";
   }
@@ -249,30 +240,27 @@ function applyPermissions() {
 // ========================
 window.onload = function() {
   const userKey = prompt("Enter manager key (leave blank if viewing only):");
-
   if (userKey === MANAGER_KEY) {
-    // MANAGER
     isManager = true;
-    // Load data from localStorage if exists, otherwise start empty
+    // Managers read from localStorage first
     data = JSON.parse(localStorage.getItem("airlineData")) || [];
     render();
-    applyPermissions(); // show edit panel
   } else {
-    // VIEWER
-    isManager = false;
+    // Viewers fetch GitHub JSON only
     fetch('airlineData.json')
       .then(res => res.json())
       .then(json => {
-        data = json; // read-only
+        data = json;
+        isManager = false;
         render();
-        applyPermissions();
+        applyPermissions(); // hide edit controls
       })
       .catch(err => {
         console.warn("GitHub JSON failed, fallback to localStorage:", err);
         data = JSON.parse(localStorage.getItem("airlineData")) || [];
+        isManager = false;
         render();
         applyPermissions();
       });
   }
 };
-
