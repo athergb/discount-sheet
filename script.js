@@ -38,11 +38,7 @@ function saveAirline() {
   }
 
   const saveRecord = (logoData) => {
-    const record = {
-      airline, note, notification, discount, category,
-      logo: logoData || "",
-      validity
-    };
+    const record = { airline, note, notification, discount, category, logo: logoData || "", validity };
 
     if (editIndex === "") data.push(record);
     else data[editIndex] = record;
@@ -172,11 +168,22 @@ window.onload=function(){
   const userKey = prompt("Enter manager key (leave blank for view only):");
   isManager = userKey === MANAGER_KEY;
 
-  // Load data: manager uses localStorage, viewers cannot edit
-  if(isManager) data = JSON.parse(localStorage.getItem("airlineData"))||[];
-  else fetch("airlineData.json").then(r=>r.json()).then(json=>{data=json;}).catch(err=>{
-    console.warn("GitHub JSON failed, fallback to localStorage",err);
+  if(isManager){
+    // Manager uses localStorage
     data = JSON.parse(localStorage.getItem("airlineData"))||[];
-  });
-  render();
+    render();
+  } else {
+    // Viewer fetches from GitHub JSON
+    fetch("airlineData.json")
+      .then(r=>r.json())
+      .then(json=>{
+        data = json; // read-only
+        render();
+      })
+      .catch(err=>{
+        console.warn("GitHub JSON failed, fallback to localStorage",err);
+        data = JSON.parse(localStorage.getItem("airlineData"))||[];
+        render();
+      });
+  }
 };
