@@ -1,60 +1,136 @@
-/* General styling */
-body {
+/* RESET */
+* {
+  box-sizing: border-box;
   font-family: Arial, sans-serif;
-  padding: 10px;
 }
 
-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+/* HEADER */
+.top-header {
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .main-logo {
-  width: 80px;
-  height: auto;
+  height: 60px;
 }
 
+/* CONTROLS */
 .controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.controls input,
+.controls select,
+.controls button {
+  padding: 6px;
+  font-size: 14px;
+}
+
+/* SHEET BACKGROUND */
+#sheet {
+  background: url("background.jpg") no-repeat center center;
+  background-size: cover;
+  padding: 20px;
+}
+
+/* GDS LOGOS */
+.gds-logos {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
   margin: 15px 0;
+}
+
+.logo-box {
+  width: 70px;
+  height: 40px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.controls input, .controls select, .controls button {
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-/* Lock edit panel styling */
-.controls input:disabled,
-.controls select:disabled,
-.controls button.save-btn:disabled {
-  background: #f0f0f0;
-  color: #888;
-  cursor: not-allowed;
-}
-
-/* Sheet styling */
-#gdsGrid, .grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo-box img {
-  width: 50px;
-  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
 }
 
-.bottom-actions {
-  margin-top: 15px;
+/* TEXT */
+.gds-offer-text {
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
 }
 
-#lockBtn {
-  padding: 8px 12px;
-  border-radius: 5px;
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* CARD */
+.card {
+  background: rgba(255,255,255,0.95);
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  border: none;
+}
+
+.discount {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.card img {
+  max-width: 100%;
+  max-height: 50px;
+  object-fit: contain;
+}
+
+.notice {
+  color: red;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.validity {
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* EXPIRED */
+.expired {
+  color: red;
+  font-weight: bold;
+}
+
+/* ACTIONS */
+.actions span {
   cursor: pointer;
+  margin-right: 10px;
+  color: blue;
+  font-size: 13px;
+}
+
+/* BOTTOM BUTTONS */
+.bottom-actions {
+  text-align: center;
+  margin: 15px 0;
+}
+
+/* PRINT */
+@media print {
+  .controls,
+  .bottom-actions {
+    display: none;
+  }
 }
