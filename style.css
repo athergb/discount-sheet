@@ -83,7 +83,7 @@
   display: flex;
   justify-content: center;  /* center all logos horizontally */
   align-items: center;      /* vertical alignment */
-  gap: 25px;                /* spacing between logos */
+  gap: 30px;                /* spacing between logos */
   margin: 15px 0;
 }
 
@@ -200,5 +200,6 @@
     margin: 0;
   }
 }
+
 
 
