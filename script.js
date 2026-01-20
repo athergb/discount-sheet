@@ -190,7 +190,11 @@ function saveAsImage() {
   document.body.classList.add("print-mode");
   const sheet = document.getElementById("sheet");
 
-  html2canvas(sheet, { scale: 3, backgroundColor: "#fff", useCORS: true }).then(canvas => {
+  html2canvas(sheet, {
+    scale: 3,
+    useCORS: true,
+    backgroundColor: null // allow background image
+  }).then(canvas => {
     const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
     const filename = `QFC-Airline-Discount-${timestamp}.jpg`;
 
@@ -203,7 +207,9 @@ function saveAsImage() {
   });
 }
 
+
 // ========================
 // INITIAL RENDER
 // ========================
 window.onload = render;
+
