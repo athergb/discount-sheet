@@ -4,7 +4,7 @@
 const MANAGER_KEY = "QFCAirline123";
 let isManager = false;
 let data = [];
-
+let GITHUB_TOKEN = "";
 // ========================
 // ELEMENTS (FIXED)
 // ========================
@@ -57,8 +57,9 @@ function saveAirline() {
     else data[editIndex] = record;
 
     localStorage.setItem("airlineData", JSON.stringify(data));
-    clearForm();
-    render();
+updateGitHubJSON();
+clearForm();
+render();
   };
 
   if (logoInput.files.length) {
@@ -178,23 +179,31 @@ function saveAsImage() {
 // ========================
 // INIT
 // ========================
-window.onload = () => {
+window.onload = async () => {
   const key = prompt("Enter manager key (leave blank to view)");
   isManager = key === MANAGER_KEY;
 
   if (isManager) {
-    try {
-      data = JSON.parse(localStorage.getItem("airlineData")) || [];
-    } catch {
-      data = [];
+    GITHUB_TOKEN = prompt("Enter GitHub Token (required to sync)");
+
+    const saved = localStorage.getItem("airlineData");
+    if (saved) {
+      data = JSON.parse(saved);
+      render();
+    } else {
+      await loadFromGitHub();
     }
-    render();
   } else {
-    fetch("airlineData.json")
-      .then(r => r.json())
-      .then(j => {
-        data = j;
-        render();
-      });
+    await loadFromGitHub();
   }
 };
+async function loadFromGitHub() {
+  try {
+    const res = await fetch("airlineData.json");
+    data = await res.json();
+  } catch {
+    data = [];
+  }
+  render();
+}
+
