@@ -106,8 +106,12 @@ function render() {
   const today = new Date();
 
   data.forEach((a, i) => {
-    const cardDate = new Date(a.validity);
-    const validityClass = cardDate < today ? "expired" : "";
+    // Parse date string to local date
+  const parts = a.validity.split("-"); // ["YYYY","MM","DD"]
+  const cardDate = new Date(parts[0], parts[1]-1, parts[2]); // month is 0-based
+  const todayDate = new Date();
+  todayDate.setHours(0,0,0,0); // ignore time
+  const validityClass = cardDate < todayDate ? "expired" : "";
 
     const validityDisplay = cardDate.toLocaleDateString("en-US", {
       year: "numeric",
@@ -242,3 +246,4 @@ window.onload = function() {
       render();
     });
 };
+
