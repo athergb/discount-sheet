@@ -249,27 +249,30 @@ function applyPermissions() {
 // ========================
 window.onload = function() {
   const userKey = prompt("Enter manager key (leave blank if viewing only):");
+
   if (userKey === MANAGER_KEY) {
+    // MANAGER
     isManager = true;
-    // Use localStorage for manager
+    // Load data from localStorage if exists, otherwise start empty
     data = JSON.parse(localStorage.getItem("airlineData")) || [];
     render();
+    applyPermissions(); // show edit panel
   } else {
-    // Viewer: fetch from GitHub JSON
+    // VIEWER
+    isManager = false;
     fetch('airlineData.json')
       .then(res => res.json())
       .then(json => {
-        data = json;
-        isManager = false;
+        data = json; // read-only
         render();
         applyPermissions();
       })
       .catch(err => {
         console.warn("GitHub JSON failed, fallback to localStorage:", err);
         data = JSON.parse(localStorage.getItem("airlineData")) || [];
-        isManager = false;
         render();
         applyPermissions();
       });
   }
 };
+
