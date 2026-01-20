@@ -205,6 +205,15 @@ h2, h3 {
   font-weight: 600;
 }
 
+#sheet {
+  background-image: linear-gradient(
+      rgba(255,255,255,0.85),
+      rgba(255,255,255,0.85)
+    ),
+    url("background.jpg");
+}
+
+
 
 
 
