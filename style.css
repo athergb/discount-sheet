@@ -78,27 +78,32 @@
 /* =========================
    GDS LOGOS
 ========================= */
+/* GDS LOGOS CONTAINER */
 .gds-logos {
   display: flex;
-  justify-content: center;
-  gap: 25px;
+  justify-content: center;  /* center all logos horizontally */
+  align-items: center;      /* vertical alignment */
+  gap: 20px;                /* spacing between logos */
   margin: 15px 0;
 }
 
+/* INDIVIDUAL LOGO BOX */
 .logo-box {
-  width: 100px;            /* increased width */
-  height: 60px;            /* increased height */
+  width: 120px;             /* bigger container */
+  height: 80px;             /* taller container */
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.9);
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.9); /* subtle background */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 5px;             /* optional padding */
 }
 
+/* LOGO IMAGE INSIDE BOX */
 .logo-box img {
-  max-width: 80%;           /* increase logo size inside container */
-  max-height: 80%;
+  max-width: 90%;           /* increase logo size inside container */
+  max-height: 90%;
   object-fit: contain;
   display: block;
 }
@@ -195,3 +200,4 @@
     margin: 0;
   }
 }
+
