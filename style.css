@@ -1,4 +1,3 @@
-/* Body & background */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -7,7 +6,6 @@ body {
   background-size: cover;
 }
 
-/* Header */
 header, .controls, .bottom-actions {
   padding: 10px;
   text-align: center;
@@ -18,7 +16,6 @@ header, .controls, .bottom-actions {
   margin-bottom: 10px;
 }
 
-/* Controls panel */
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -36,7 +33,6 @@ header, .controls, .bottom-actions {
   font-size: 14px;
 }
 
-/* Grids */
 .grid {
   display: flex;
   flex-wrap: wrap;
@@ -45,14 +41,12 @@ header, .controls, .bottom-actions {
   padding: 10px;
 }
 
-/* Card */
 .card {
   background: rgba(255,255,255,0.9);
   padding: 10px;
   width: 200px;
   border-radius: 8px;
   text-align: center;
-  position: relative;
 }
 
 .card img {
@@ -62,40 +56,34 @@ header, .controls, .bottom-actions {
   margin: 5px 0;
 }
 
-/* GDS logos */
 .gds-logos .logo-box img {
   max-width: 60px;
   max-height: 40px;
   object-fit: contain;
 }
 
-/* Discount text */
 .discount {
   font-weight: bold;
   font-size: 18px;
   color: green;
 }
 
-/* Notices */
 .notice {
   color: orange;
   display: block;
 }
 
-/* Expired validity */
 .validity.expired {
   color: red;
   font-weight: bold;
 }
 
-/* Action buttons */
 .actions span {
   margin: 5px;
   cursor: pointer;
   color: blue;
 }
 
-/* Bottom buttons */
 .bottom-actions {
   margin: 20px 0;
   text-align: center;
