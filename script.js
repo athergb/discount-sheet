@@ -1,7 +1,7 @@
 // ========================
 // MANAGER ACCESS
 // ========================
-const MANAGER_KEY = "QFCAirline123"; // secret manager key
+const MANAGER_KEY = "QFCAirline123";
 let isManager = false;
 
 // ========================
@@ -30,7 +30,7 @@ function saveAirline() {
   const discount = discountInput.value.trim();
   const category = categoryInput.value;
   const editIndex = editIndexInput.value;
-  const validity = validityInput.value; // YYYY-MM-DD
+  const validity = validityInput.value;
 
   if (!airline || !discount || !validity) {
     alert("Airline, Discount, and Validity are required!");
@@ -39,58 +39,33 @@ function saveAirline() {
 
   const saveRecord = (logoData) => {
     const record = {
-      airline,
-      note,
-      notification,
-      discount,
-      category,
+      airline, note, notification, discount, category,
       logo: logoData || "",
-      validity // store exact YYYY-MM-DD
+      validity
     };
 
-    if (editIndex === "") {
-      data.push(record);
-    } else {
-      data[editIndex] = record; // update existing
-    }
+    if (editIndex === "") data.push(record);
+    else data[editIndex] = record;
 
-    saveToStorage();
+    localStorage.setItem("airlineData", JSON.stringify(data));
     clearForm();
     render();
   };
 
   if (logoInput.files.length > 0) {
     const reader = new FileReader();
-    reader.onload = function () {
-      saveRecord(reader.result);
-    };
+    reader.onload = () => saveRecord(reader.result);
     reader.readAsDataURL(logoInput.files[0]);
-  } else {
-    saveRecord("");
-  }
+  } else saveRecord("");
 }
 
 // ========================
 // CLEAR FORM
 // ========================
 function clearForm() {
-  document.getElementById("airline").value = "";
-  document.getElementById("note").value = "";
-  document.getElementById("notification").value = "";
-  document.getElementById("discount").value = "";
-  document.getElementById("logo").value = "";
-  document.getElementById("validity").value = "";
-  document.getElementById("category").value = "cash";
-  document.getElementById("editIndex").value = "";
-}
-
-// ========================
-// LOCAL STORAGE (for manager edits)
-// ========================
-function saveToStorage() {
-  if (isManager) {
-    localStorage.setItem("airlineData", JSON.stringify(data));
-  }
+  ["airline","note","notification","discount","logo","validity","category","editIndex"].forEach(id=>{
+    document.getElementById(id).value = id==="category"?"cash":"";
+  });
 }
 
 // ========================
@@ -99,76 +74,59 @@ function saveToStorage() {
 function render() {
   const cashGrid = document.getElementById("cashGrid");
   const creditGrid = document.getElementById("creditGrid");
+
   cashGrid.innerHTML = "";
   creditGrid.innerHTML = "";
 
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  today.setHours(0,0,0,0);
 
-  data.forEach((a, i) => {
-    // Parse manual YYYY-MM-DD
+  data.forEach((a,i)=>{
     const parts = a.validity.split("-");
-    const cardDate = new Date(parts[0], parts[1] - 1, parts[2]);
+    const cardDate = new Date(parts[0], parts[1]-1, parts[2]);
     const validityClass = cardDate < today ? "expired" : "";
+    const validityDisplay = cardDate.toLocaleDateString("en-US", {year:"numeric",month:"long",day:"numeric"});
 
-    const validityDisplay = cardDate.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
-
-    const actionsHTML = isManager
-      ? `<div class="actions">
-           <span onclick="edit(${i})">Edit</span>
-           <span onclick="del(${i})">Delete</span>
-         </div>`
-      : "";
+    const actionsHTML = isManager ? `
+      <div class="actions">
+        <span onclick="edit(${i})">Edit</span>
+        <span onclick="del(${i})">Delete</span>
+      </div>` : "";
 
     const card = `
       <div class="card">
         <div class="discount">${a.discount}</div>
-        ${a.logo ? `<img src="${a.logo}">` : ""}
+        ${a.logo?`<img src="${a.logo}">`:""}
         <p><b>${a.airline}</b></p>
-        <p>
-          ${a.note}
-          ${a.notification ? `<span class="notice">${a.notification}</span>` : ""}
-        </p>
+        <p>${a.note}${a.notification?`<span class="notice">${a.notification}</span>`:""}</p>
         <p class="validity ${validityClass}">Valid till: ${validityDisplay}</p>
         ${actionsHTML}
-      </div>
-    `;
+      </div>`;
 
-    if (a.category === "cash") cashGrid.innerHTML += card;
+    if(a.category==="cash") cashGrid.innerHTML += card;
     else creditGrid.innerHTML += card;
   });
 
-  // Only show controls for manager
-  const controls = document.querySelector(".controls");
-  if (!isManager) controls.style.display = "none";
+  if(!isManager) document.querySelector(".controls").style.display="none";
 }
 
 // ========================
 // EDIT & DELETE
 // ========================
-function edit(i) {
-  if (!isManager) return;
-
+function edit(i){
+  if(!isManager) return;
   const a = data[i];
-  document.getElementById("airline").value = a.airline;
-  document.getElementById("note").value = a.note;
-  document.getElementById("notification").value = a.notification || "";
-  document.getElementById("discount").value = a.discount;
-  document.getElementById("category").value = a.category;
-  document.getElementById("validity").value = a.validity;
+  ["airline","note","notification","discount","category","validity"].forEach(id=>{
+    document.getElementById(id).value = a[id];
+  });
   document.getElementById("editIndex").value = i;
 }
 
-function del(i) {
-  if (!isManager) return;
-
-  if (confirm("Delete this airline?")) {
-    data.splice(i, 1);
-    saveToStorage();
+function del(i){
+  if(!isManager) return;
+  if(confirm("Delete this airline?")) {
+    data.splice(i,1);
+    localStorage.setItem("airlineData", JSON.stringify(data));
     render();
   }
 }
@@ -176,97 +134,49 @@ function del(i) {
 // ========================
 // LOCK PANEL
 // ========================
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded",()=>{
   const lockBtn = document.getElementById("lockBtn");
   const controlsSection = document.querySelector(".controls");
-
-  if (!lockBtn) return;
-
+  if(!lockBtn) return;
   let isLocked = false;
-  lockBtn.addEventListener("click", () => {
+  lockBtn.addEventListener("click",()=>{
     isLocked = !isLocked;
-    controlsSection.querySelectorAll("input, select, button").forEach(el => {
-      if (el.id !== "lockBtn") el.disabled = isLocked;
+    controlsSection.querySelectorAll("input,select,button").forEach(el=>{
+      if(el.id!=="lockBtn") el.disabled = isLocked;
     });
-    lockBtn.textContent = isLocked
-      ? "🔓 Unlock Edit Panel"
-      : "🔒 Lock Edit Panel";
+    lockBtn.textContent = isLocked?"🔓 Unlock Edit Panel":"🔒 Lock Edit Panel";
   });
 });
 
 // ========================
 // SAVE AS IMAGE
 // ========================
-function saveAsImage() {
+function saveAsImage(){
   document.body.classList.add("print-mode");
-  
-  const sheet = document.getElementById("sheet");
-
-  html2canvas(sheet, {
-    scale: 3,
-    useCORS: true,          // needed for external images
-    allowTaint: true,       // allows cross-origin images if no CORS
-    backgroundColor: null   // keep background image
-  }).then(canvas => {
-    const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
-    const filename = `QFC-Airline-Discount-${timestamp}.jpg`;
-
+  html2canvas(document.getElementById("sheet"),{
+    scale:3,useCORS:true,backgroundColor:null
+  }).then(canvas=>{
+    const timestamp = new Date().toISOString().replace(/[:.-]/g,"");
     const link = document.createElement("a");
-    link.href = canvas.toDataURL("image/jpeg", 0.95);
-    link.download = filename;
+    link.href = canvas.toDataURL("image/jpeg",0.95);
+    link.download = `QFC-Airline-Discount-${timestamp}.jpg`;
     link.click();
-
     document.body.classList.remove("print-mode");
   });
-}
-
-
-// ========================
-// APPLY VIEWER PERMISSIONS
-// ========================
-function applyPermissions() {
-  const controls = document.querySelector(".controls");
-  const actionButtons = document.querySelectorAll(".actions span");
-  const lockBtn = document.getElementById("lockBtn");
-
-  if (!isManager) {
-    controls.style.display = "none";
-    actionButtons.forEach(btn => btn.style.display = "none");
-    if (lockBtn) lockBtn.style.display = "none";
-  } else {
-    controls.style.display = "flex";
-    actionButtons.forEach(btn => btn.style.display = "inline");
-    if (lockBtn) lockBtn.style.display = "inline-block";
-  }
 }
 
 // ========================
 // INITIAL LOAD
 // ========================
-window.onload = function() {
-  const userKey = prompt("Enter manager key (leave blank if viewing only):");
-  if (userKey === MANAGER_KEY) {
-    isManager = true;
-    // Managers read from localStorage first
-    data = JSON.parse(localStorage.getItem("airlineData")) || [];
-    render();
-  } else {
-    // Viewers fetch GitHub JSON only
-    fetch('airlineData.json')
-      .then(res => res.json())
-      .then(json => {
-        data = json;
-        isManager = false;
-        render();
-        applyPermissions(); // hide edit controls
-      })
-      .catch(err => {
-        console.warn("GitHub JSON failed, fallback to localStorage:", err);
-        data = JSON.parse(localStorage.getItem("airlineData")) || [];
-        isManager = false;
-        render();
-        applyPermissions();
-      });
-  }
-};
+window.onload=function(){
+  const userKey = prompt("Enter manager key (leave blank for view only):");
+  isManager = userKey === MANAGER_KEY;
 
+  // Load data: manager uses localStorage, viewers cannot edit
+  if(isManager) data = JSON.parse(localStorage.getItem("airlineData"))||[];
+  else fetch("airlineData.json").then(r=>r.json()).then(json=>{data=json;}).catch(err=>{
+    console.warn("GitHub JSON failed, fallback to localStorage",err);
+    data = JSON.parse(localStorage.getItem("airlineData"))||[];
+  });
+  render();
+};
