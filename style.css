@@ -110,16 +110,17 @@
    TEXT
 ========================= */
 .gds-offer-text {
-  text-align: center;                  /* center below logos */
-  font-weight: bold;
-  font-size: 28px;                     /* bigger font */
-  color: #222;                         /* dark color for readability */
-  background-color: rgba(255, 255, 0, 0.35); /* subtle yellow highlight */
-  padding: 10px 16px;                   /* padding around text */
-  border-radius: 8px;                  /* rounded edges */
-  margin: 20px auto;                   /* spacing above and below */
-  width: fit-content;                  /* shrink wrap to text width */
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15); /* subtle shadow */
+  display: inline-block;                     /* shrink-wrap to content */
+  text-align: center;                        /* center text */
+  font-weight: bold;                         /* bold */
+  font-size: 32px;                           /* big and prominent */
+  color: #222;                               /* dark color for readability */
+  background-color: rgba(255, 255, 0, 0.4); /* subtle yellow highlight */
+  padding: 12px 20px;                        /* space around text */
+  border-radius: 10px;                       /* rounded corners */
+  margin: 20px auto;                         /* center horizontally & spacing */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);    /* subtle shadow for depth */
+  max-width: 90%;                             /* prevents overflow on small screens */
 }
 
 /* =========================
@@ -200,5 +201,6 @@
     margin: 0;
   }
 }
+
 
 
