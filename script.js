@@ -103,15 +103,15 @@ function render() {
   cashGrid.innerHTML = "";
   creditGrid.innerHTML = "";
 
-  const today = new Date();
+  const todayDate = new Date();
+  todayDate.setHours(0, 0, 0, 0); // ignore time
 
   data.forEach((a, i) => {
-    // Parse date string to local date
-  const parts = a.validity.split("-"); // ["YYYY","MM","DD"]
-  const cardDate = new Date(parts[0], parts[1]-1, parts[2]); // month is 0-based
-  const todayDate = new Date();
-  todayDate.setHours(0,0,0,0); // ignore time
-  const validityClass = cardDate < todayDate ? "expired" : "";
+    // Parse validity YYYY-MM-DD
+    const parts = a.validity.split("-");
+    const cardDate = new Date(parts[0], parts[1] - 1, parts[2]);
+
+    const validityClass = cardDate < todayDate ? "expired" : "";
 
     const validityDisplay = cardDate.toLocaleDateString("en-US", {
       year: "numeric",
@@ -119,7 +119,7 @@ function render() {
       day: "numeric"
     });
 
-    // Only show Edit/Delete if manager
+    // Show edit/delete only if manager
     const actionsHTML = isManager
       ? `<div class="actions">
            <span onclick="edit(${i})">Edit</span>
@@ -148,7 +148,7 @@ function render() {
     }
   });
 
-  // Hide edit panel for viewers
+  // Hide controls for viewers
   const controls = document.querySelector(".controls");
   if (!isManager) controls.style.display = "none";
 }
@@ -211,7 +211,7 @@ function saveAsImage() {
   html2canvas(sheet, {
     scale: 3,
     useCORS: true,
-    backgroundColor: null // Use background image if set in CSS
+    backgroundColor: null // keep CSS background image
   }).then(canvas => {
     const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
     const filename = `QFC-Airline-Discount-${timestamp}.jpg`;
@@ -226,24 +226,50 @@ function saveAsImage() {
 }
 
 // ========================
+// APPLY PERMISSIONS (VIEWER/MANAGER)
+// ========================
+function applyPermissions() {
+  const controls = document.querySelector(".controls");
+  const actionButtons = document.querySelectorAll(".actions span");
+  const lockBtn = document.getElementById("lockBtn");
+
+  if (!isManager) {
+    if (controls) controls.style.display = "none";
+    actionButtons.forEach(btn => btn.style.display = "none");
+    if (lockBtn) lockBtn.style.display = "none";
+  } else {
+    if (controls) controls.style.display = "flex";
+    actionButtons.forEach(btn => btn.style.display = "inline");
+    if (lockBtn) lockBtn.style.display = "inline-block";
+  }
+}
+
+// ========================
 // INITIAL LOAD
 // ========================
 window.onload = function() {
   const userKey = prompt("Enter manager key (leave blank if viewing only):");
   if (userKey === MANAGER_KEY) {
     isManager = true;
+    // Use localStorage for manager
+    data = JSON.parse(localStorage.getItem("airlineData")) || [];
+    render();
+  } else {
+    // Viewer: fetch from GitHub JSON
+    fetch('airlineData.json')
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        isManager = false;
+        render();
+        applyPermissions();
+      })
+      .catch(err => {
+        console.warn("GitHub JSON failed, fallback to localStorage:", err);
+        data = JSON.parse(localStorage.getItem("airlineData")) || [];
+        isManager = false;
+        render();
+        applyPermissions();
+      });
   }
-
-  fetch('airlineData.json')
-    .then(res => res.json())
-    .then(json => {
-      data = json; // Load from GitHub
-      render();
-    })
-    .catch(err => {
-      console.warn("GitHub JSON failed, fallback to localStorage:", err);
-      data = JSON.parse(localStorage.getItem("airlineData")) || [];
-      render();
-    });
 };
-
