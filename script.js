@@ -200,21 +200,17 @@ function clearForm() {
 // ========================
 // SAVE AS JPG
 // ========================
-async function saveAsJPG() {
-  const sheet = document.getElementById("sheet");
-
-  const canvas = await html2canvas(sheet, {
-    scale: 2,                    // IMPORTANT: fixes tiny content
+function saveAsImage() {
+  html2canvas(sheet, {
+    scale: 3,
     useCORS: true,
-    backgroundColor: null,
-    windowWidth: sheet.scrollWidth,
-    windowHeight: sheet.scrollHeight
+    backgroundColor: "#ffffff"
+  }).then(canvas => {
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/jpeg", 0.95);
+    link.download = "QFC-Airline-Discount.jpg";
+    link.click();
   });
-
-  const link = document.createElement("a");
-  link.download = "QFC-Airline-Discount.jpg";
-  link.href = canvas.toDataURL("image/jpeg", 0.95);
-  link.click();
 }
 
 // ========================
@@ -252,4 +248,5 @@ async function updateGitHubJSON() {
     })
   });
 }
+
 
