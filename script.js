@@ -47,18 +47,33 @@ function render() {
 async function saveAsJPG() {
   const sheet = document.getElementById("sheet");
 
-  const canvas = await html2canvas(sheet, {
+  // Clone sheet so live layout never moves
+  const clone = sheet.cloneNode(true);
+  clone.style.width = "1100px";
+  clone.style.margin = "0 auto";
+  clone.style.background = "#ffffff";
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
+
+  const canvas = await html2canvas(clone, {
     scale: 2,
     backgroundColor: "#ffffff",
-    useCORS: true,
-    width: sheet.offsetWidth,
-    height: sheet.scrollHeight
+    useCORS: true
   });
 
+  document.body.removeChild(wrapper);
+
+  const img = canvas.toDataURL("image/jpeg", 0.92);
   const link = document.createElement("a");
-  link.download = "QFC-Airline-Discount.jpg";
-  link.href = canvas.toDataURL("image/jpeg", 0.95);
+  link.download = "QFC-Airline-Discount-A4.jpg";
+  link.href = img;
   link.click();
 }
 
 window.onload = loadData;
+
