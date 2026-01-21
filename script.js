@@ -75,5 +75,35 @@ async function saveAsJPG() {
   link.click();
 }
 
+async function saveForWhatsApp() {
+  const sheet = document.getElementById("sheet");
+
+  const clone = sheet.cloneNode(true);
+  clone.style.width = "900px";     // WhatsApp friendly width
+  clone.style.background = "#ffffff";
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-9999px";
+  wrapper.style.top = "0";
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
+
+  const canvas = await html2canvas(clone, {
+    scale: 1.5,
+    backgroundColor: "#ffffff",
+    useCORS: true
+  });
+
+  document.body.removeChild(wrapper);
+
+  const img = canvas.toDataURL("image/jpeg", 0.9);
+  const link = document.createElement("a");
+  link.download = "QFC-Airline-Discount-WhatsApp.jpg";
+  link.href = img;
+  link.click();
+}
+
 window.onload = loadData;
+
 
