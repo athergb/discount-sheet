@@ -1,89 +1,176 @@
 /* =========================
-   PROFESSIONAL AIRLINE CARD
+   GLOBAL LOCK (DO NOT TOUCH)
+========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* =========================
+   TOP HEADER
+========================= */
+.top-header {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.top-header .main-logo {
+  height: 90px;
+}
+
+/* =========================
+   SHEET WRAPPER (LOCK WIDTH)
+========================= */
+#sheet-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* =========================
+   SHEET (A4 SAFE)
+========================= */
+#sheet {
+  width: 1100px;                /* LOCKED */
+  background: #ffffff;
+  padding: 20px;
+}
+
+/* =========================
+   TOP ROW
+========================= */
+.sheet-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.sheet-logo img {
+  height: 130px;
+}
+
+/* =========================
+   GDS LOGOS
+========================= */
+.gds-logos {
+  display: flex;
+  gap: 20px;
+}
+
+.logo-box {
+  width: 120px;
+  height: 80px;
+  background: #fff;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* =========================
+   OFFER TEXT
+========================= */
+.gds-offer-text {
+  margin: 20px auto;
+  padding: 10px 18px;
+  background: rgba(255,255,0,0.4);
+  font-size: 22px;
+  font-weight: bold;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+/* =========================
+   GRID
+========================= */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* =========================
+   CARD (LOCKED SHAPE)
 ========================= */
 .card {
-  position: relative;                      /* for discount tag */
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-  overflow: hidden;
-  padding: 20px 15px 50px 15px;           /* extra bottom padding for actions */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  text-align: center;
+  position: relative;
 }
 
-/* Hover effect */
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+.card img {
+  max-height: 70px;
+  margin-bottom: 8px;
 }
 
-/* DISCOUNT TAG */
 .discount {
   position: absolute;
-  top: 10px;
-  left: -10px;                             /* half outside container */
-  background: #ffeb3b;
-  color: #222;
+  top: -10px;
+  left: -10px;
+  background: yellow;
+  padding: 5px 8px;
   font-weight: bold;
-  padding: 6px 12px;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-  font-size: 18px;
-  z-index: 2;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-}
-
-/* AIRLINE LOGO */
-.card img {
-  max-width: 140px;     /* larger logo */
-  max-height: 100px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  margin: 50px 0 10px 0;                     /* spacing for discount tag */
-}
-
-/* Airline name */
-.card p:first-of-type {
-  font-weight: bold;
-  font-size: 16px;
-  text-align: center;
-  margin-bottom: 6px;
-}
-
-/* Notification / note below name */
-.card p:last-of-type {
-  font-size: 14px;
-  text-align: center;
+  border-radius: 6px;
 }
 
 .notice {
-  display: inline-block;
-  color: black;
-  font-weight: bold;
-  background-color: yellow; /* highlight */
-  padding: 2px 4px;
-  border-radius: 4px;
-  margin-left: 4px;
+  background: yellow;
+  font-size: 12px;
+  padding: 2px 6px;
+  margin-left: 5px;
 }
 
-/* Actions (Edit / Delete) */
+.validity {
+  font-size: 12px;
+}
+
+.expired {
+  color: red;
+  font-weight: bold;
+}
+
+/* =========================
+   ACTIONS
+========================= */
 .actions {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  display: flex;
-  gap: 8px;
+  bottom: 6px;
+  right: 8px;
 }
 
 .actions span {
+  font-size: 12px;
   cursor: pointer;
-  font-size: 13px;
   color: blue;
-  user-select: none;
+}
+
+/* =========================
+   BOTTOM
+========================= */
+.bottom-actions {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* =========================
+   PRINT / JPG SAFE
+========================= */
+@media print {
+  .top-header,
+  .bottom-actions {
+    display: none !important;
+  }
 }
