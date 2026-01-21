@@ -100,10 +100,11 @@ async function saveForWhatsApp() {
   const img = canvas.toDataURL("image/jpeg", 0.9);
   const link = document.createElement("a");
   link.download = "QFC-Airline-Discount-WhatsApp.jpg";
-  link.href = img;
+  link.href = canvas.toDataURL("image/jpeg", 0.9);
   link.click();
 }
 
 window.onload = loadData;
+
 
 
